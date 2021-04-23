@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "Pomg",
+			"Path": "D:\\Fuentes\\Unreal\\Pomg\\Source\\Pomg.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "PomgEditor",
+			"Path": "D:\\Fuentes\\Unreal\\Pomg\\Source\\PomgEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}

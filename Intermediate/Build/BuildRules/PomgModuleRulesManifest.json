@@ -1,0 +1,8 @@
+{
+	"SourceFiles": [
+		"D:\\Fuentes\\Unreal\\Pomg\\Source\\Pomg\\Pomg.Build.cs",
+		"D:\\Fuentes\\Unreal\\Pomg\\Source\\Pomg.Target.cs",
+		"D:\\Fuentes\\Unreal\\Pomg\\Source\\PomgEditor.Target.cs"
+	],
+	"EngineVersion": "4.26.2"
+}

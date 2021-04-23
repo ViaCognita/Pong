@@ -1,0 +1,7 @@
+D:\Fuentes\Unreal\Pomg\Intermediate\Build\Win64\UE4Editor\Development\Pomg\Definitions.Pomg.h
+D:\Fuentes\Unreal\Pomg\Source\Pomg\PomgGameModeBase.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\Engine\Classes\GameFramework/GameModeBase.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\Engine\Classes\Engine/ServerStatReplicator.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\ServerStatReplicator.generated.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\GameModeBase.generated.h
+D:\Fuentes\Unreal\Pomg\Intermediate\Build\Win64\UE4Editor\Inc\Pomg\PomgGameModeBase.generated.h
