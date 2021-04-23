@@ -1,2 +1,0 @@
-D:\Fuentes\Unreal\Pomg\Intermediate\Build\Win64\UE4Editor\Development\Pomg\Definitions.Pomg.h
-D:\Fuentes\Unreal\Pomg\Source\Pomg\Pomg.h

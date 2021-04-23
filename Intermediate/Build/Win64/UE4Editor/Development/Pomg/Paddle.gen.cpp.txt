@@ -1,5 +1,0 @@
-D:\Fuentes\Unreal\Pomg\Intermediate\Build\Win64\UE4Editor\Development\Pomg\Definitions.Pomg.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h
-D:\Fuentes\Unreal\Pomg\Source\Pomg/Public/Paddle.h
-D:\Fuentes\Unreal\Pomg\Intermediate\Build\Win64\UE4Editor\Inc\Pomg\Paddle.generated.h

@@ -1,7 +1,0 @@
-D:\Fuentes\Unreal\Pomg\Intermediate\Build\Win64\UE4Editor\Development\Pomg\Definitions.Pomg.h
-D:\Fuentes\Unreal\Pomg\Source\Pomg\Public\Paddle.h
-D:\Fuentes\Unreal\Pomg\Intermediate\Build\Win64\UE4Editor\Inc\Pomg\Paddle.generated.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\Engine\Classes\Components/BoxComponent.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\Engine\Classes\Components/ShapeComponent.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\ShapeComponent.generated.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\BoxComponent.generated.h
