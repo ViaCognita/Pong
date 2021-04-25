@@ -35,6 +35,11 @@ APaddle::APaddle()
 		VisualComponent->SetStaticMesh(VisualAsset.Object);
 		VisualComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 		VisualComponent->SetWorldScale3D(FVector(1.0f));
+
+		FBoxSphereBounds Bounds = VisualAsset.Object->ExtendedBounds;
+
+		CollisionComponent->SetRelativeLocation(Bounds.Origin);
+		CollisionComponent->SetBoxExtent(Bounds.BoxExtent);
 	}
 
 	// Initialize paddle velocity.
