@@ -4,6 +4,7 @@
 #include "Paddle.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "PaddlePawnMovementComponent.h"
 
 // Sets default values
 APaddle::APaddle()
@@ -36,14 +37,12 @@ APaddle::APaddle()
 		VisualComponent->SetWorldScale3D(FVector(1.0f));
 	}
 
-	FVector Min, Max;
-	VisualComponent->GetLocalBounds(Min, Max);
-	FBox NewBox(Min, Max);
-
-	CollisionComponent->SetRelativeLocation(NewBox.GetCenter());
-	CollisionComponent->SetRelativeScale3D(NewBox.GetExtent());
-
+	// Initialize paddle velocity.
 	CurrentVelocity.Z = 0.0f;
+
+	// Create an instance of our movement component, and tell it to update our root component.
+	OurMovementComponent = CreateDefaultSubobject<UPaddlePawnMovementComponent>(TEXT("CustomMovementComponent"));
+	OurMovementComponent->UpdatedComponent = RootComponent;
 
 }
 
@@ -66,6 +65,11 @@ void APaddle::Tick(float DeltaTime)
 		SetActorLocation(NewLocation);
 	}
 
+}
+
+UPawnMovementComponent* APaddle::GetMovementComponent() const
+{
+	return OurMovementComponent;
 }
 
 // Called to bind functionality to input

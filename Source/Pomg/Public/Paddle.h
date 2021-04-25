@@ -8,6 +8,7 @@
 
 // Avoid add unnecesary imports.
 class UBoxComponent;
+class UPaddlePawnMovementComponent;
 
 UCLASS()
 class POMG_API APaddle : public APawn
@@ -30,6 +31,11 @@ protected:
 
 	// Input variables
 	FVector CurrentVelocity;
+
+	// Use my own Pawn Movement Component implementation.
+	UPaddlePawnMovementComponent* OurMovementComponent;
+
+	virtual UPawnMovementComponent* GetMovementComponent() const override;
 
 
 public:	
