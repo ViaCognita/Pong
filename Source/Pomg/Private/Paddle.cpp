@@ -29,19 +29,6 @@ APaddle::APaddle()
 	// Disable collision.
 	VisualComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> VisualAsset(TEXT("/Game/Geometry/Meshes/Paddle_mesh.Paddle_mesh"));
-	if (VisualAsset.Succeeded())
-	{
-		VisualComponent->SetStaticMesh(VisualAsset.Object);
-		VisualComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-		VisualComponent->SetWorldScale3D(FVector(1.0f));
-
-		FBoxSphereBounds Bounds = VisualAsset.Object->ExtendedBounds;
-
-		CollisionComponent->SetRelativeLocation(Bounds.Origin);
-		CollisionComponent->SetBoxExtent(Bounds.BoxExtent);
-	}
-
 	// Initialize paddle velocity.
 	CurrentVelocity.Z = 0.0f;
 
@@ -75,6 +62,31 @@ void APaddle::Tick(float DeltaTime)
 UPawnMovementComponent* APaddle::GetMovementComponent() const
 {
 	return OurMovementComponent;
+}
+
+void APaddle::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	// Check if property is valid
+	if (PropertyChangedEvent.Property != nullptr)
+	{
+		// Get the name of the changed property
+		const FName PropertyName(PropertyChangedEvent.Property->GetFName());
+		// If the changed property is ShowStaticMesh then we
+		// will set the visibility of the actor
+		if (PropertyName == GET_MEMBER_NAME_CHECKED(APaddle, VisualComponent))
+		{
+			UStaticMesh* SM = VisualComponent->GetStaticMesh();
+			if (SM != nullptr)
+			{
+				FBoxSphereBounds Bounds = SM->ExtendedBounds;
+
+				CollisionComponent->SetRelativeLocation(Bounds.Origin);
+				CollisionComponent->SetBoxExtent(Bounds.BoxExtent);
+			}
+		}
+	}
+	// Then call the parent version of this function
+	Super::PostEditChangeProperty(PropertyChangedEvent);
 }
 
 // Called to bind functionality to input

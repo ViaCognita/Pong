@@ -37,6 +37,8 @@ protected:
 
 	virtual UPawnMovementComponent* GetMovementComponent() const override;
 
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+
 
 public:	
 	// Called every frame
