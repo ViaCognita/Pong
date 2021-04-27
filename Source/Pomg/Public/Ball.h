@@ -32,6 +32,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Movement")
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

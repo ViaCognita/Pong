@@ -44,6 +44,31 @@ void ABall::BeginPlay()
 	
 }
 
+void ABall::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	// Check if property is valid
+	if (PropertyChangedEvent.Property != nullptr)
+	{
+		// Get the name of the changed property
+		const FName PropertyName(PropertyChangedEvent.Property->GetFName());
+		// If the changed property is ShowStaticMesh then we
+		// will set the visibility of the actor
+		if (PropertyName == GET_MEMBER_NAME_CHECKED(ABall, VisualComponent))
+		{
+			UStaticMesh* SM = VisualComponent->GetStaticMesh();
+			if (SM != nullptr)
+			{
+				FBoxSphereBounds Bounds = SM->ExtendedBounds;
+
+				CollisionComponent->SetRelativeLocation(Bounds.Origin);
+				CollisionComponent->SetBoxExtent(Bounds.BoxExtent);
+			}
+		}
+	}
+	// Then call the parent version of this function
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+}
+
 // Called every frame
 void ABall::Tick(float DeltaTime)
 {
