@@ -2,9 +2,15 @@
 
 
 #include "Ball.h"
+#include "Paddle.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+
+template<typename Base, typename T>
+inline bool instanceof(const T*) {
+	return std::is_base_of<Base, T>::value;
+}
 
 // Sets default values
 ABall::ABall()
@@ -34,16 +40,17 @@ ABall::ABall()
 
 	// Enable collisions.
 	SetActorEnableCollision(true);
-
-	CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+	
+	CollisionComponent->SetCollisionProfileName(TEXT("BlockAll"));
+	//CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	// Set up a notification for when this component hits something blocking.
 	CollisionComponent->OnComponentHit.AddDynamic(this, &ABall::OnHit);
 
 	// Use this component to drive this ball's movement.
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 	ProjectileMovementComponent->SetUpdatedComponent(VisualComponent);
-	ProjectileMovementComponent->InitialSpeed = 3000.0f;
-	ProjectileMovementComponent->MaxSpeed = 3000.0f;
+	ProjectileMovementComponent->InitialSpeed = 0.0f;
+	ProjectileMovementComponent->MaxSpeed = 90.0f;
 	ProjectileMovementComponent->bRotationFollowsVelocity = false;
 	ProjectileMovementComponent->bShouldBounce = true;
 	ProjectileMovementComponent->Bounciness = 0.3f;
@@ -92,10 +99,45 @@ void ABall::Tick(float DeltaTime)
 
 void ABall::FireInDirection(const FVector& ShootDirection)
 {
-	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
+	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->MaxSpeed;
 }
 
 void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
+	{
+		if (instanceof<APaddle>(OtherActor))
+		{
+			/*APaddle* paddle = (APaddle*)OtherActor;
+			float paddleVelocity = paddle->GetZVelocity();
+
+			if (paddleVelocity != 0.0f)
+				ProjectileMovementComponent->Velocity = FVector(0.0f, 300.0f, 300.0f * paddleVelocity);
+
+			paddle->PlayHitSound();*/
+		}
+		else if(OtherActor->GetName().StartsWith("AIPaddle"))
+		{
+			/*AAIPaddle* paddle = (AAIPaddle*)OtherActor;
+			float paddleVelocity = paddle->GetZVelocity();
+
+			if (paddleVelocity != 0.0f)
+				ProjectileMovementComponent->Velocity = FVector(0.0f, 300.0f, 300.0f * paddleVelocity);
+
+			paddle->PlayHitSound();*/
+		}
+		else
+		{
+			//ABounds* bounds = (ABounds*)OtherActor;
+			//// Reflecting vector: http://www.3dkingdoms.com/weekly/weekly.php?a=2
+			//FVector ReflectedVelocity = (-2 * FVector::DotProduct(ProjectileMovementComponent->Velocity, NormalImpulse) * NormalImpulse + ProjectileMovementComponent->Velocity);
+
+			//ProjectileMovementComponent->Velocity = ReflectedVelocity;
+
+			//ReflectedVelocity.Normalize();
+
+			//bounds->PlayHitSound();
+		}
+	}
 }
 
