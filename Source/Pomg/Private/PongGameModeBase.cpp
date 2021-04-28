@@ -21,5 +21,9 @@ void APongGameModeBase::StartPlay()
 	{
 		// Spawn the ball into the world.
 		CurrentBall = World->SpawnActor<ABall>(ABall::StaticClass(), FVector(0.0f, 0.0f, 250.0f), FRotator::ZeroRotator);
+
+		FVector LaunchDirection(0.0f, -1.0f, 0.0f);
+
+		CurrentBall->FireInDirection(LaunchDirection);
 	}
 }
