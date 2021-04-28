@@ -13,9 +13,23 @@ ABall::ABall()
 	PrimaryActorTick.bCanEverTick = true;
 
 	VisualComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisualComp"));
-	RootComponent = VisualComponent;
-
 	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollComp"));
+	
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> VisualAsset(TEXT("/Game/Geometry/Meshes/Ball_mesh.Ball_mesh"));
+
+	if (VisualAsset.Succeeded())
+	{
+		VisualComponent->SetStaticMesh(VisualAsset.Object);
+		VisualComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+		VisualComponent->SetWorldScale3D(FVector(1.0f));
+
+		FBoxSphereBounds Bounds = VisualAsset.Object->ExtendedBounds;
+
+		CollisionComponent->SetRelativeLocation(Bounds.Origin);
+		CollisionComponent->SetBoxExtent(Bounds.BoxExtent);
+	}
+
+	RootComponent = VisualComponent;
 	CollisionComponent->SetupAttachment(VisualComponent);
 
 	// Enable collisions.
