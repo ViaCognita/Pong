@@ -15,19 +15,16 @@ APaddle::APaddle()
 	// Set this pawn to be controlled by the lowest-numbered player
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
-	VisualComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisualComp"));
-	RootComponent = VisualComponent;
-
 	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollComp"));
-	// No physics, queries only.
-	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	// It will generate the 'Hit' event.
-	CollisionComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
-	CollisionComponent->SetupAttachment(VisualComponent);
+	VisualComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisualComp"));
 
-	// Disable collision.
-	VisualComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	RootComponent = CollisionComponent;
+
+	// Set up CollisionComponent as parent of VisualComponent;
+	VisualComponent->SetupAttachment(CollisionComponent);
+	
+	VisualComponent->BodyInstance.SetCollisionProfileName("NoCollision");
+	CollisionComponent->BodyInstance.SetCollisionProfileName("Pawn");
 
 	// Initialize paddle velocity.
 	CurrentVelocity.Z = 0.0f;
@@ -80,7 +77,7 @@ void APaddle::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent
 			{
 				FBoxSphereBounds Bounds = SM->ExtendedBounds;
 
-				CollisionComponent->SetRelativeLocation(Bounds.Origin);
+				//CollisionComponent->SetRelativeLocation(Bounds.Origin);
 				CollisionComponent->SetBoxExtent(Bounds.BoxExtent);
 			}
 		}

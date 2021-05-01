@@ -35,20 +35,16 @@ ABall::ABall()
 		CollisionComponent->SetBoxExtent(Bounds.BoxExtent);
 	}
 
-	RootComponent = VisualComponent;
-	CollisionComponent->SetupAttachment(VisualComponent);
-
-	// Enable collisions.
-	SetActorEnableCollision(true);
+	RootComponent = CollisionComponent;
+	VisualComponent->SetupAttachment(CollisionComponent);
 	
-	CollisionComponent->SetCollisionProfileName(TEXT("BlockAll"));
-	//CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
-	// Set up a notification for when this component hits something blocking.
+	VisualComponent->SetCollisionProfileName(TEXT("NoCollision"));
+	CollisionComponent->SetCollisionProfileName(TEXT("Projectile"));
 	CollisionComponent->OnComponentHit.AddDynamic(this, &ABall::OnHit);
 
 	// Use this component to drive this ball's movement.
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-	ProjectileMovementComponent->SetUpdatedComponent(VisualComponent);
+	ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
 	ProjectileMovementComponent->InitialSpeed = 0.0f;
 	ProjectileMovementComponent->MaxSpeed = 90.0f;
 	ProjectileMovementComponent->bRotationFollowsVelocity = false;
@@ -106,6 +102,8 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 {
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
 	{
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Ball Hits: %s"), *OtherActor->GetName()));
+
 		if (instanceof<APaddle>(OtherActor))
 		{
 			/*APaddle* paddle = (APaddle*)OtherActor;
