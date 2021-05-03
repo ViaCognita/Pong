@@ -38,8 +38,12 @@ ABall::ABall()
 	RootComponent = CollisionComponent;
 	VisualComponent->SetupAttachment(CollisionComponent);
 	
-	VisualComponent->SetCollisionProfileName(TEXT("NoCollision"));
-	CollisionComponent->SetCollisionProfileName(TEXT("Projectile"));
+	VisualComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	CollisionComponent->SetCollisionObjectType(ECC_WorldDynamic);
+	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	// ECC_GameTraceChannel1 = Object Type Projectile
+	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Block);
 	CollisionComponent->OnComponentHit.AddDynamic(this, &ABall::OnHit);
 
 	// Use this component to drive this ball's movement.
