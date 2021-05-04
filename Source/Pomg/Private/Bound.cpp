@@ -12,7 +12,11 @@ ABound::ABound()
 
 	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollComp"));
 	CollisionComponent->SetBoxExtent(FVector(30.0f, 30.0f, 30.0f));
-	CollisionComponent->SetCollisionProfileName(TEXT("BlockAll"));
+	
+	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	CollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel2);
+	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Block);
 
 	RootComponent = CollisionComponent;
 

@@ -12,7 +12,12 @@ AGoal::AGoal()
 
 	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollComp"));
 	CollisionComponent->SetBoxExtent(FVector(30.0f, 30.0f, 30.0f));
-	CollisionComponent->SetCollisionProfileName(TEXT("OverlapAll"));
+	
+	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	CollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel3);
+	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
+	CollisionComponent->SetGenerateOverlapEvents(true);
 
 	RootComponent = CollisionComponent;
 

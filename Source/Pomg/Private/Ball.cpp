@@ -40,10 +40,12 @@ ABall::ABall()
 	
 	VisualComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	CollisionComponent->SetCollisionObjectType(ECC_WorldDynamic);
+	CollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel1); // ECC_GameTraceChannel1 is my Projectile Object Type.
 	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-	// ECC_GameTraceChannel1 = Object Type Projectile
-	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Block);
+	CollisionComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Block); // ECC_GameTraceChannel2 is my Bound Object Type.
+	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Overlap); // ECC_GameTraceChannel3 is my Goal Object Type.
+	CollisionComponent->SetGenerateOverlapEvents(true);
 	CollisionComponent->OnComponentHit.AddDynamic(this, &ABall::OnHit);
 
 	// Use this component to drive this ball's movement.
@@ -141,5 +143,12 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 			//bounds->PlayHitSound();
 		}
 	}
+}
+
+void ABall::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Overlaps: %s"), *OtherActor->GetName()));
 }
 
