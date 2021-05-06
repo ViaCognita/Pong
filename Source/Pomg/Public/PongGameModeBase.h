@@ -17,10 +17,15 @@ class POMG_API APongGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 
 public:
-	ABall* CurrentBall;
 
 	APongGameModeBase();
 
 	virtual void StartPlay() override;
+
+	ABall* GetBall();
+
+private:
+	
+	ABall* CurrentBall;
 	
 };
