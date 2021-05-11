@@ -2,6 +2,7 @@
 
 
 #include "AIPaddle.h"
+#include "Ball.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "PaddlePawnMovementComponent.h"
@@ -54,6 +55,11 @@ void AAIPaddle::Tick(float DeltaTime)
 void AAIPaddle::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void AAIPaddle::SetGameBall(ABall* Ball)
+{
+	this->GameBall = Ball;
 }
 
 UPawnMovementComponent* AAIPaddle::GetMovementComponent() const

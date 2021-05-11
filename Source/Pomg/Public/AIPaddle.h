@@ -9,6 +9,7 @@
 // Avoid add unnecesary imports.
 class UBoxComponent;
 class UPaddlePawnMovementComponent;
+class ABall;
 
 UCLASS()
 class POMG_API AAIPaddle : public APawn
@@ -39,11 +40,16 @@ protected:
 
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
+private:
+	ABall* GameBall;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void SetGameBall(ABall* Ball);
 
 };
