@@ -3,6 +3,7 @@
 
 #include "Ball.h"
 #include "Paddle.h"
+#include "AIPaddle.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -110,18 +111,30 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 	{
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Ball Hits: %s"), *OtherActor->GetName()));
 
-		if (instanceof<APaddle>(OtherActor))
+		if (APaddle* Paddle = Cast<APaddle>(OtherActor))
 		{
-			/*APaddle* paddle = (APaddle*)OtherActor;
-			float paddleVelocity = paddle->GetZVelocity();
+			float PaddleVelocity = Paddle->GetZVelocity();
 
-			if (paddleVelocity != 0.0f)
-				ProjectileMovementComponent->Velocity = FVector(0.0f, 300.0f, 300.0f * paddleVelocity);
+			//if (PaddleVelocity != 0.0f)
+			//	PaddleVelocity = 1.0f;
 
+			FVector Direction = FVector(0.0f, 1.0f, PaddleVelocity);
+
+			ProjectileMovementComponent->Velocity = Direction * ProjectileMovementComponent->MaxSpeed;
+
+			/*
 			paddle->PlayHitSound();*/
 		}
-		else if(OtherActor->GetName().StartsWith("AIPaddle"))
+		else if(AAIPaddle* AIPaddle = Cast<AAIPaddle>(OtherActor))
 		{
+			float PaddleVelocity = AIPaddle->GetZVelocity();
+
+			//if (PaddleVelocity != 0.0f)
+			//	PaddleVelocity = 1.0f;
+
+			FVector Direction = FVector(0.0f, -1.0f, PaddleVelocity);
+
+			ProjectileMovementComponent->Velocity = Direction * ProjectileMovementComponent->MaxSpeed;
 			/*AAIPaddle* paddle = (AAIPaddle*)OtherActor;
 			float paddleVelocity = paddle->GetZVelocity();
 

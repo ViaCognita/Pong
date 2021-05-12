@@ -50,4 +50,10 @@ public:
 	// Input functions
 	void Move_ZAxis(float AxisValue);
 
+	/**
+	* Velocity is a vector quantity that refers to "the rate at which an object changes its position."
+	* From: https://www.physicsclassroom.com/class/1DKin/Lesson-1/Speed-and-Velocity
+	*/
+	float GetZVelocity() const;
+
 };

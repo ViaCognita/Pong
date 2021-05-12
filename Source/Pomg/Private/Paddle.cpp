@@ -100,3 +100,8 @@ void APaddle::Move_ZAxis(float AxisValue)
 	CurrentVelocity.Z = FMath::Clamp(AxisValue, -1.0f, 1.0f) * 100.0f;
 }
 
+float APaddle::GetZVelocity() const
+{
+	return CurrentVelocity.Z;
+}
+

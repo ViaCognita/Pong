@@ -93,3 +93,8 @@ void AAIPaddle::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEve
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 }
 
+float AAIPaddle::GetZVelocity() const
+{
+	return CurrentVelocity.Z;
+}
+
