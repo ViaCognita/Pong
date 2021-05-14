@@ -4,6 +4,7 @@
 #include "Ball.h"
 #include "Paddle.h"
 #include "AIPaddle.h"
+#include "Bound.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -53,7 +54,7 @@ ABall::ABall()
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 	ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
 	ProjectileMovementComponent->InitialSpeed = 0.0f;
-	ProjectileMovementComponent->MaxSpeed = 90.0f;
+	ProjectileMovementComponent->MaxSpeed = 190.0f;
 	ProjectileMovementComponent->bRotationFollowsVelocity = false;
 	ProjectileMovementComponent->bShouldBounce = true;
 	ProjectileMovementComponent->Bounciness = 0.3f;
@@ -145,11 +146,13 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 		}
 		else
 		{
-			//ABounds* bounds = (ABounds*)OtherActor;
-			//// Reflecting vector: http://www.3dkingdoms.com/weekly/weekly.php?a=2
-			//FVector ReflectedVelocity = (-2 * FVector::DotProduct(ProjectileMovementComponent->Velocity, NormalImpulse) * NormalImpulse + ProjectileMovementComponent->Velocity);
+			ABound* bounds = Cast<ABound>(OtherActor);
+			// Reflecting vector: http://www.3dkingdoms.com/weekly/weekly.php?a=2
+			FVector ReflectedVelocity = (-2 * FVector::DotProduct(ProjectileMovementComponent->Velocity, NormalImpulse) * NormalImpulse + ProjectileMovementComponent->MaxSpeed);
+			// We only move on Y and Z axis.
+			ReflectedVelocity.X = 0.0f;
 
-			//ProjectileMovementComponent->Velocity = ReflectedVelocity;
+			ProjectileMovementComponent->Velocity = ReflectedVelocity;
 
 			//ReflectedVelocity.Normalize();
 
