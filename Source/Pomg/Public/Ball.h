@@ -48,4 +48,7 @@ public:
 	UFUNCTION()
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
+private:
+	float Reduce(float value) const;
+
 };

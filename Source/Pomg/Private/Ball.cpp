@@ -113,7 +113,7 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 
 		if (APaddle* Paddle = Cast<APaddle>(OtherActor))
 		{
-			float PaddleVelocity = Paddle->GetZVelocity();
+			float PaddleVelocity = ABall::Reduce(Paddle->GetZVelocity());
 
 			//if (PaddleVelocity != 0.0f)
 			//	PaddleVelocity = 1.0f;
@@ -127,7 +127,7 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 		}
 		else if(AAIPaddle* AIPaddle = Cast<AAIPaddle>(OtherActor))
 		{
-			float PaddleVelocity = AIPaddle->GetZVelocity();
+			float PaddleVelocity = ABall::Reduce(AIPaddle->GetZVelocity());
 
 			//if (PaddleVelocity != 0.0f)
 			//	PaddleVelocity = 1.0f;
@@ -163,5 +163,15 @@ void ABall::NotifyActorBeginOverlap(AActor* OtherActor)
 	Super::NotifyActorBeginOverlap(OtherActor);
 
 	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Overlaps: %s"), *OtherActor->GetName()));
+}
+
+float ABall::Reduce(float value) const
+{
+	if (value > 1.0f)
+		return 1.0f;
+	else if (value < -1.0f)
+		return -1.0f;
+	else
+		return value;
 }
 
