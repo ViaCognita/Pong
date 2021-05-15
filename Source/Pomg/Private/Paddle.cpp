@@ -2,9 +2,11 @@
 
 
 #include "Paddle.h"
+#include "Ball.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "PaddlePawnMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APaddle::APaddle()
@@ -25,6 +27,7 @@ APaddle::APaddle()
 	
 	VisualComponent->BodyInstance.SetCollisionProfileName("NoCollision");
 	CollisionComponent->BodyInstance.SetCollisionProfileName("Pawn");
+	CollisionComponent->OnComponentHit.AddDynamic(this, &APaddle::OnHit);
 
 	// Initialize paddle velocity.
 	CurrentVelocity.Z = 0.0f;
@@ -32,6 +35,11 @@ APaddle::APaddle()
 	// Create an instance of our movement component, and tell it to update our root component.
 	OurMovementComponent = CreateDefaultSubobject<UPaddlePawnMovementComponent>(TEXT("CustomMovementComponent"));
 	OurMovementComponent->UpdatedComponent = RootComponent;
+
+	// Create the sound.
+	static ConstructorHelpers::FObjectFinder<USoundWave> HitSoundAsset(TEXT("/Game/Effects/pong-paddle.pong-paddle"));
+	if (HitSoundAsset.Succeeded())
+		HitSound = HitSoundAsset.Object;
 
 }
 
@@ -86,6 +94,19 @@ void APaddle::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 }
 
+void APaddle::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
+	{
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Paddle has been hit by: %s"), *OtherActor->GetName()));
+
+		if (ABall* Ball = Cast<ABall>(OtherActor))
+		{
+			PlayHitSound();
+		}
+	}
+}
+
 // Called to bind functionality to input
 void APaddle::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -105,3 +126,10 @@ float APaddle::GetZVelocity() const
 	return CurrentVelocity.Z;
 }
 
+void APaddle::PlayHitSound()
+{
+	if (HitSound != nullptr)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
+	}
+}

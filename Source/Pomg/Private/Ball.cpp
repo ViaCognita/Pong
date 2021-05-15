@@ -123,8 +123,7 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 
 			ProjectileMovementComponent->Velocity = Direction * ProjectileMovementComponent->MaxSpeed;
 
-			/*
-			paddle->PlayHitSound();*/
+			//Paddle->PlayHitSound();
 		}
 		else if(AAIPaddle* AIPaddle = Cast<AAIPaddle>(OtherActor))
 		{
@@ -153,8 +152,6 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 			ReflectedVelocity.X = 0.0f;
 
 			ProjectileMovementComponent->Velocity = ReflectedVelocity;
-
-			//ReflectedVelocity.Normalize();
 
 			//bounds->PlayHitSound();
 		}
