@@ -61,8 +61,6 @@ public:
 	*/
 	float GetZVelocity() const;
 
-	void PlayHitSound();
-
 private:
 	// Sound played when the ball hits this Paddle.
 	USoundBase* HitSound;

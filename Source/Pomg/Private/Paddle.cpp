@@ -102,7 +102,10 @@ void APaddle::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitive
 
 		if (ABall* Ball = Cast<ABall>(OtherActor))
 		{
-			PlayHitSound();
+			if (HitSound != nullptr)
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
+			}
 		}
 	}
 }
@@ -124,12 +127,4 @@ void APaddle::Move_ZAxis(float AxisValue)
 float APaddle::GetZVelocity() const
 {
 	return CurrentVelocity.Z;
-}
-
-void APaddle::PlayHitSound()
-{
-	if (HitSound != nullptr)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
-	}
 }
