@@ -165,6 +165,11 @@ void ABall::NotifyActorBeginOverlap(AActor* OtherActor)
 	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Overlaps: %s"), *OtherActor->GetName()));
 }
 
+FVector ABall::GetVelocity() const
+{
+	return ProjectileMovementComponent->Velocity;
+}
+
 float ABall::Reduce(float value) const
 {
 	if (value > 1.0f)

@@ -32,7 +32,7 @@ AAIPaddle::AAIPaddle()
 	CurrentVelocity.Z = 0.0f;
 
 	// Create an instance of our movement component, and tell it to update our root component.
-	OurMovementComponent = CreateDefaultSubobject<UPaddlePawnMovementComponent>(TEXT("CustomMovementComponent"));
+	OurMovementComponent = CreateDefaultSubobject<UPaddlePawnMovementComponent>(TEXT("AIPaddleCustomMovementComponent"));
 	OurMovementComponent->UpdatedComponent = RootComponent;
 
 }
@@ -44,10 +44,51 @@ void AAIPaddle::BeginPlay()
 	
 }
 
+float AAIPaddle::ComputeBallZCoordinate() const
+{
+	float z = 0.0f;
+	// 1. Get paddle location.
+	FVector PaddleLocation = GetActorLocation();
+	
+	// 2. Get ball location.
+	FVector BallLocation = GameBall->GetActorLocation();
+	
+	// 3. Get ball velocity.
+	FVector BallVelocty = GameBall->GetVelocity();
+
+	// 4. Compute ball new Z location.
+	float t = (PaddleLocation.Y - BallLocation.Y) / BallVelocty.Y;
+	
+	z = BallVelocty.Z * t + BallLocation.Z;
+	
+	return z;
+}
+
+void AAIPaddle::MovePaddle(float direction)
+{
+	float Scale = 100.0f;
+
+	FVector DirectionVector = FVector(0.0f, 0.0f, direction);
+
+	OurMovementComponent->AddInputVector(DirectionVector * Scale);
+}
+
 // Called every frame
 void AAIPaddle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (GameBall->GetVelocity().Y > 0.0f)
+	{
+		float z = ComputeBallZCoordinate();
+
+		if (z > GetActorLocation().Z)
+			MovePaddle(1.0f);
+		else if (z < GetActorLocation().Z)
+			MovePaddle(-1.0f);
+		else
+			MovePaddle(0.0f);
+	}
 
 }
 

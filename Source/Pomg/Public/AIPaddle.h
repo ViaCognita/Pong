@@ -43,6 +43,10 @@ protected:
 private:
 	ABall* GameBall;
 
+	float ComputeBallZCoordinate() const;
+
+	void MovePaddle(float direction);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

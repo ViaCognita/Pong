@@ -48,6 +48,8 @@ public:
 	UFUNCTION()
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
+	FVector GetVelocity() const;
+
 private:
 	float Reduce(float value) const;
 
