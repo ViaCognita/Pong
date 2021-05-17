@@ -6,6 +6,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "PaddlePawnMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Avoid add unnecesary imports.
 class UBoxComponent;
@@ -27,6 +28,7 @@ AAIPaddle::AAIPaddle()
 
 	VisualComponent->BodyInstance.SetCollisionProfileName("NoCollision");
 	CollisionComponent->BodyInstance.SetCollisionProfileName("Pawn");
+	CollisionComponent->OnComponentHit.AddDynamic(this, &AAIPaddle::OnHit);
 
 	// Initialize paddle velocity.
 	CurrentVelocity.Z = 0.0f;
@@ -34,6 +36,11 @@ AAIPaddle::AAIPaddle()
 	// Create an instance of our movement component, and tell it to update our root component.
 	OurMovementComponent = CreateDefaultSubobject<UPaddlePawnMovementComponent>(TEXT("AIPaddleCustomMovementComponent"));
 	OurMovementComponent->UpdatedComponent = RootComponent;
+
+	// Create the sound.
+	static ConstructorHelpers::FObjectFinder<USoundWave> HitSoundAsset(TEXT("/Game/Effects/pong-paddle.pong-paddle"));
+	if (HitSoundAsset.Succeeded())
+		HitSound = HitSoundAsset.Object;
 
 }
 
@@ -132,6 +139,22 @@ void AAIPaddle::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEve
 
 	// Then call the parent version of this function
 	Super::PostEditChangeProperty(PropertyChangedEvent);
+}
+
+void AAIPaddle::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
+	{
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("AI Paddle has been hit by: %s"), *OtherActor->GetName()));
+
+		if (ABall* Ball = Cast<ABall>(OtherActor))
+		{
+			if (HitSound != nullptr)
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
+			}
+		}
+	}
 }
 
 float AAIPaddle::GetZVelocity() const

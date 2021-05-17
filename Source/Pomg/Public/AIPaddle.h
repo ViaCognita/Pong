@@ -10,6 +10,7 @@
 class UBoxComponent;
 class UPaddlePawnMovementComponent;
 class ABall;
+class USoundBase;
 
 UCLASS()
 class POMG_API AAIPaddle : public APawn
@@ -40,12 +41,19 @@ protected:
 
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
+	/** called when projectile hits something */
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 private:
 	ABall* GameBall;
 
 	float ComputeBallZCoordinate() const;
 
 	void MovePaddle(float direction);
+
+	// Sound played when the ball hits this Paddle.
+	USoundBase* HitSound;
 
 public:	
 	// Called every frame
