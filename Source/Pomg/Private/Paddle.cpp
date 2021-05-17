@@ -33,7 +33,7 @@ APaddle::APaddle()
 	CurrentVelocity.Z = 0.0f;
 
 	// Create an instance of our movement component, and tell it to update our root component.
-	OurMovementComponent = CreateDefaultSubobject<UPaddlePawnMovementComponent>(TEXT("CustomMovementComponent"));
+	OurMovementComponent = CreateDefaultSubobject<UPaddlePawnMovementComponent>(TEXT("PaddleCustomMovementComponent"));
 	OurMovementComponent->UpdatedComponent = RootComponent;
 
 	// Create the sound.
