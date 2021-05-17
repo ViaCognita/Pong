@@ -2,7 +2,9 @@
 
 
 #include "Bound.h"
+#include "Ball.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABound::ABound()
@@ -17,8 +19,14 @@ ABound::ABound()
 	CollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel2);
 	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Block);
+	CollisionComponent->OnComponentHit.AddDynamic(this, &ABound::OnHit);
 
 	RootComponent = CollisionComponent;
+
+	// Create the sound.
+	static ConstructorHelpers::FObjectFinder<USoundWave> HitSoundAsset(TEXT("/Game/Effects/pong-wall.pong-wall"));
+	if (HitSoundAsset.Succeeded())
+		HitSound = HitSoundAsset.Object;
 
 }
 
@@ -27,6 +35,22 @@ void ABound::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ABound::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
+	{
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Paddle has been hit by: %s"), *OtherActor->GetName()));
+
+		if (ABall* Ball = Cast<ABall>(OtherActor))
+		{
+			if (HitSound != nullptr)
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
+			}
+		}
+	}
 }
 
 // Called every frame
