@@ -18,7 +18,7 @@ ABound::ABound()
 	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	CollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel2);
 	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Block);
+	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Block); // ECC_GameTraceChannel1 is my Projectile Object Type.
 	CollisionComponent->OnComponentHit.AddDynamic(this, &ABound::OnHit);
 
 	RootComponent = CollisionComponent;
@@ -41,7 +41,7 @@ void ABound::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveC
 {
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
 	{
-		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Paddle has been hit by: %s"), *OtherActor->GetName()));
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Bound has been hit by: %s"), *OtherActor->GetName()));
 
 		if (ABall* Ball = Cast<ABall>(OtherActor))
 		{
