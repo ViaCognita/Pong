@@ -50,6 +50,8 @@ public:
 
 	FVector GetVelocity() const;
 
+	void StopMovement();
+
 private:
 	float Reduce(float value) const;
 

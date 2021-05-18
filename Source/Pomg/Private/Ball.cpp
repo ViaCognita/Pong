@@ -182,6 +182,11 @@ FVector ABall::GetVelocity() const
 	return ProjectileMovementComponent->Velocity;
 }
 
+void ABall::StopMovement()
+{
+	ProjectileMovementComponent->Velocity = FVector::ZeroVector;
+}
+
 float ABall::Reduce(float value) const
 {
 	if (value > 1.0f)
@@ -189,6 +194,6 @@ float ABall::Reduce(float value) const
 	else if (value < -1.0f)
 		return -1.0f;
 	else
-		return value;
+		return 0.0f;
 }
 
