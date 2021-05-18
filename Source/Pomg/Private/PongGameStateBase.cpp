@@ -11,6 +11,10 @@ APongGameStateBase::APongGameStateBase()
 
 	CurrentState = EPongStates::EWaitingToStart;
 
+	AIScore = 0;
+	PlayerScore = 0;
+
+	LastScore = ELastScored::ENone;
 }
 
 void APongGameStateBase::BeginPlay()
@@ -35,8 +39,12 @@ void APongGameStateBase::Tick(float DeltaTime)
 				UWorld* const world = GetWorld();
 				if (world)
 				{
-					ABall* ball = (Cast<APongGameModeBase>(world->GetAuthGameMode()))->GetBall();
-					//ball->StartMovement();
+					APongGameModeBase* GameMode = Cast<APongGameModeBase>(world->GetAuthGameMode());
+
+					if (LastScore == ELastScored::EArtificialIntelligence)
+						GameMode->LaunchTheBallToAI();
+					else
+						GameMode->LaunchTheBallToPlayer();
 				}
 			}
 			break;
@@ -54,4 +62,42 @@ void APongGameStateBase::Tick(float DeltaTime)
 EPongStates APongGameStateBase::GetCurrentState()
 {
     return CurrentState;
+}
+
+void APongGameStateBase::AddAIPoint()
+{
+	APongGameModeBase* GameMode = Cast<APongGameModeBase>(GetWorld()->GetAuthGameMode());
+
+	// Increase AI score.
+	AIScore++;
+
+	// Update who has made the last score.
+	LastScore = ELastScored::EArtificialIntelligence;
+
+	// Stop the ball.
+	GameMode->StopTheBall();
+
+	// Update the HUD.
+
+	// Change game state.
+	CurrentState = EPongStates::EWaitingToStart;
+}
+
+void APongGameStateBase::AddPlayerPoint()
+{
+	APongGameModeBase* GameMode = Cast<APongGameModeBase>(GetWorld()->GetAuthGameMode());
+
+	// Increase AI score.
+	PlayerScore++;
+
+	// Update who has made the last score.
+	LastScore = ELastScored::EPlayer;
+
+	// Stop the ball.
+	GameMode->StopTheBall();
+
+	// Update the HUD.
+
+	// Change game state.
+	CurrentState = EPongStates::EWaitingToStart;
 }

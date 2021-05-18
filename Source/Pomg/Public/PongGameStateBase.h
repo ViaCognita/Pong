@@ -15,6 +15,13 @@ enum class EPongStates
 	EPushBall
 };
 
+enum class ELastScored
+{
+	EPlayer,
+	EArtificialIntelligence,
+	ENone
+};
+
 /**
  * 
  */
@@ -36,6 +43,10 @@ public:
 	// Get current state
 	EPongStates GetCurrentState();
 
+	void AddAIPoint();
+
+	void AddPlayerPoint();
+
 private:
 
 	EPongStates CurrentState;
@@ -46,4 +57,7 @@ private:
 	// Values to store the current score
 	int AIScore;
 	int PlayerScore;
+
+	// Who has made the last score.
+	ELastScored LastScore;
 };

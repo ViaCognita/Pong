@@ -22,10 +22,15 @@ public:
 
 	virtual void StartPlay() override;
 
-	ABall* GetBall();
+	void LaunchTheBallToPlayer();
+	void LaunchTheBallToAI();
+
+	void StopTheBall();
 
 private:
 	
 	ABall* CurrentBall;
+
+	void LaunchTheBall(float YDirection);
 	
 };

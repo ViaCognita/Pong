@@ -28,20 +28,11 @@ void APongGameModeBase::StartPlay()
 
 	UWorld* const World = GetWorld();
 	if (World)
-	{
-		
+	{		
 		// Spawn the ball into the world.
 		CurrentBall = World->SpawnActor<ABall>(ABall::StaticClass(), FVector(0.0f, 0.0f, 250.0f), FRotator::ZeroRotator);
-		FVector LaunchDirection(0.0f, -1.0f, 0.0f);
-		CurrentBall->FireInDirection(LaunchDirection);
-		
-		/*
-		APaddle* playerPaddle = (APaddle*)World->GetFirstPlayerController()->GetPawn();
-		playerPaddle->SetActorLocation(FVector(0.0f, -500.0f, 170.0f));
-		playerPaddle->SetActorRotation(FRotator::ZeroRotator);
 
-		AAIPaddle* aiPaddle = World->SpawnActor<AAIPaddle>(AAIPaddle::StaticClass(), FVector(0.0f, 500.0f, 170.0f), FRotator::ZeroRotator);
-		*/
+		LaunchTheBallToPlayer();
 
 		TArray<AActor*> FoundActors;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAIPaddle::StaticClass(), FoundActors);
@@ -51,15 +42,32 @@ void APongGameModeBase::StartPlay()
 			AAIPaddle* AIPaddle = Cast<AAIPaddle>(TActor);
 
 			if (AIPaddle != nullptr)
-				// Do what ever you need with your MyActor
 				AIPaddle->SetGameBall(CurrentBall);
 		}
-
-		//aiPaddle->SetBall(CurrentBall);
 	}
 }
 
-ABall* APongGameModeBase::GetBall()
+void APongGameModeBase::LaunchTheBallToPlayer()
 {
-	return CurrentBall;
+	LaunchTheBall(-1.0f);
 }
+
+void APongGameModeBase::LaunchTheBallToAI()
+{
+	LaunchTheBall(1.0f);
+}
+
+void APongGameModeBase::StopTheBall()
+{
+	CurrentBall->StopMovement();
+}
+
+void APongGameModeBase::LaunchTheBall(float YDirection)
+{
+	if (CurrentBall != nullptr)
+	{
+		FVector LaunchDirection(0.0f, YDirection, 0.0f);
+		CurrentBall->FireInDirection(LaunchDirection);
+	}
+}
+
