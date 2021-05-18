@@ -2,7 +2,9 @@
 
 
 #include "Goal.h"
+#include "Ball.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AGoal::AGoal()
@@ -21,6 +23,11 @@ AGoal::AGoal()
 
 	RootComponent = CollisionComponent;
 
+	// Create the sound.
+	static ConstructorHelpers::FObjectFinder<USoundWave> HitSoundAsset(TEXT("/Game/Effects/pong-point.pong-point"));
+	if (HitSoundAsset.Succeeded())
+		HitSound = HitSoundAsset.Object;
+
 }
 
 // Called when the game starts or when spawned
@@ -35,5 +42,20 @@ void AGoal::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AGoal::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Overlaps: %s"), *OtherActor->GetName()));
+
+	if (ABall* Ball = Cast<ABall>(OtherActor))
+	{
+		if (HitSound != nullptr)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
+		}
+	}
 }
 

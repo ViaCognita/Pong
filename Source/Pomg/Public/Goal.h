@@ -8,6 +8,7 @@
 
 // Avoid add unnecesary imports.
 class UBoxComponent;
+class USoundBase;
 
 UCLASS()
 class POMG_API AGoal : public AActor
@@ -28,5 +29,12 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION()
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+private:
+	// Sound played when the ball hits this Paddle.
+	USoundBase* HitSound;
 
 };
