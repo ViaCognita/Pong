@@ -5,6 +5,7 @@
 #include "Paddle.h"
 #include "AIPaddle.h"
 #include "Bound.h"
+#include "PongGameStateBase.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -112,37 +113,25 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 	{
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Ball Hits: %s"), *OtherActor->GetName()));
 
+		// Paddle Hit.
 		if (APaddle* Paddle = Cast<APaddle>(OtherActor))
 		{
 			float PaddleVelocity = ABall::Reduce(Paddle->GetZVelocity());
 
-			//if (PaddleVelocity != 0.0f)
-			//	PaddleVelocity = 1.0f;
-
 			FVector Direction = FVector(0.0f, 1.0f, PaddleVelocity);
 
 			ProjectileMovementComponent->Velocity = Direction * ProjectileMovementComponent->MaxSpeed;
-
-			//Paddle->PlayHitSound();
 		}
+		// AI Paddle Hit.
 		else if(AAIPaddle* AIPaddle = Cast<AAIPaddle>(OtherActor))
 		{
 			float PaddleVelocity = ABall::Reduce(AIPaddle->GetZVelocity());
 
-			//if (PaddleVelocity != 0.0f)
-			//	PaddleVelocity = 1.0f;
-
 			FVector Direction = FVector(0.0f, -1.0f, PaddleVelocity);
 
 			ProjectileMovementComponent->Velocity = Direction * ProjectileMovementComponent->MaxSpeed;
-			/*AAIPaddle* paddle = (AAIPaddle*)OtherActor;
-			float paddleVelocity = paddle->GetZVelocity();
-
-			if (paddleVelocity != 0.0f)
-				ProjectileMovementComponent->Velocity = FVector(0.0f, 300.0f, 300.0f * paddleVelocity);
-
-			paddle->PlayHitSound();*/
 		}
+		// Bound Hit.
 		else
 		{
 			ABound* bounds = Cast<ABound>(OtherActor);
@@ -152,8 +141,6 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 			ReflectedVelocity.X = 0.0f;
 
 			ProjectileMovementComponent->Velocity = ReflectedVelocity;
-
-			//bounds->PlayHitSound();
 		}
 	}
 }
@@ -163,6 +150,31 @@ void ABall::NotifyActorBeginOverlap(AActor* OtherActor)
 	Super::NotifyActorBeginOverlap(OtherActor);
 
 	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Overlaps: %s"), *OtherActor->GetName()));
+
+	if (OtherActor->GetName().Equals("Goal_AI"))
+	{
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Goal_AI"));
+
+		UWorld* const world = GetWorld();
+		if (world)
+		{
+			APongGameStateBase* GameState = Cast<APongGameStateBase>(world->GetGameState());
+
+			GameState->AddAIPoint();
+		}
+	}
+	else if (OtherActor->GetName().Equals("Goal_Player"))
+	{
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Goal_Player"));
+
+		UWorld* const world = GetWorld();
+		if (world)
+		{
+			APongGameStateBase* GameState = Cast<APongGameStateBase>(world->GetGameState());
+
+			GameState->AddPlayerPoint();
+		}
+	}
 }
 
 FVector ABall::GetVelocity() const

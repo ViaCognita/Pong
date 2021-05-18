@@ -131,7 +131,6 @@ void AAIPaddle::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEve
 			{
 				FBoxSphereBounds Bounds = SM->ExtendedBounds;
 
-				//CollisionComponent->SetRelativeLocation(Bounds.Origin);
 				CollisionComponent->SetBoxExtent(Bounds.BoxExtent);
 			}
 		}
