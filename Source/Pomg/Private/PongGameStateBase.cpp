@@ -4,6 +4,7 @@
 #include "PongGameStateBase.h"
 #include "Ball.h"
 #include "PongGameModeBase.h"
+#include "PongHUD.h"
 
 APongGameStateBase::APongGameStateBase()
 {
@@ -78,6 +79,9 @@ void APongGameStateBase::AddAIPoint()
 	GameMode->StopTheBall();
 
 	// Update the HUD.
+	APongHUD* Hud = Cast<APongHUD>(GameMode->HUDClass);
+
+	//Hud->SetAIScored(AIScore);
 
 	// Change game state.
 	CurrentState = EPongStates::EWaitingToStart;

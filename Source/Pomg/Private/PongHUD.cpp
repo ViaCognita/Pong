@@ -5,6 +5,8 @@
 #include "PongGameStateBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Canvas.h"
+#include "Blueprint/UserWidget.h"
+#include "UObject/Class.h"
 
 const float MidScreenOffset = 80.0f;
 
@@ -22,8 +24,23 @@ APongHUD::APongHUD()
 	else
 		TextFont = nullptr;
 
-	PlayerScore = 0;
-	AIScore = 0;
+	ConstructorHelpers::FClassFinder<UUserWidget> WBPPlayerHudFinder(TEXT("/Game/Blueprint/Widgets/UI/UMG_PlayerHUD"));
+	if (WBPPlayerHudFinder.Succeeded())
+	{
+		HudClass = WBPPlayerHudFinder.Class;
+
+		/*if (HudClass)
+		{
+			PlayerHudWidget = CreateWidget<UUserWidget>(GetWorld(), HudClass);
+
+			PlayerHudWidget->AddToViewport();
+		}*/
+	}
+	else
+	{
+		HudClass = nullptr;
+		PlayerHudWidget = nullptr;
+	}
 }
 
 void APongHUD::DrawHUD()
@@ -66,16 +83,42 @@ void APongHUD::DrawHUD()
 	//{
 	//	GetTextSize(TEXT("PLAY"), StartTextSize.X, StartTextSize.Y, TextFont);
 	//	DrawText(TEXT("PLAY"), FColor::White, (ScreenDimensions.X - StartTextSize.X) / 2.0f, (ScreenDimensions.Y - StartTextSize.Y) / 2.0f, TextFont, TextScale);
-	//}
-
+	//}	
 }
 
-void APongHUD::SetAIScored()
+void APongHUD::SetAIScored(int value)
 {
-	AIScore++;
+	if (PlayerHudWidget != nullptr)
+	{
+		UClass* WidgetHudClass = PlayerHudWidget->GetClass();
+		if (WidgetHudClass != nullptr)
+		{
+			//UFunction* Func = PlayerHudWidget->GetClass()->FindFunctionByName(FName("UpdatePlayerScore"));
+			UFunction* Func = WidgetHudClass->FindFunctionByName(FName("UpdatePlayerScore"));
+			if (Func == nullptr) { return; }
+
+			FStructOnScope FuncParam(Func);
+			FProperty* ReturnProp = nullptr;
+
+			for (TFieldIterator<FProperty> It(Func); It; ++It)
+			{
+				FProperty* Prop = *It;
+				if (Prop->HasAnyPropertyFlags(CPF_ReturnParm))
+				{
+					ReturnProp = Prop;
+				}
+				else
+				{
+					//FillParam here            
+				}
+			}
+
+			PlayerHudWidget->ProcessEvent(Func, FuncParam.GetStructMemory());
+		}
+	}
 }
 
-void APongHUD::SetPlayerScored()
+void APongHUD::SetPlayerScored(int value)
 {
-	PlayerScore++;
+	
 }

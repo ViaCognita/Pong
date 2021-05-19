@@ -6,6 +6,8 @@
 #include "GameFramework/HUD.h"
 #include "PongHUD.generated.h"
 
+class UUserWidget;
+
 /**
  * 
  */
@@ -23,11 +25,11 @@ public:
 
 	virtual void DrawHUD() override;
 
-	void SetAIScored();
-	void SetPlayerScored();
+	void SetAIScored(int value);
+	void SetPlayerScored(int value);
 
 private:
-	int AIScore;
-	int PlayerScore;
 	
+	TSubclassOf<UUserWidget> HudClass;
+	UUserWidget* PlayerHudWidget;
 };
