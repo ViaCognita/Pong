@@ -3,6 +3,7 @@
 
 #include "PongHUD.h"
 #include "PongGameStateBase.h"
+#include "PlayerHUDWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Canvas.h"
 #include "Blueprint/UserWidget.h"
@@ -24,21 +25,14 @@ APongHUD::APongHUD()
 	else
 		TextFont = nullptr;
 
-	ConstructorHelpers::FClassFinder<UUserWidget> WBPPlayerHudFinder(TEXT("/Game/Blueprint/Widgets/UI/UMG_PlayerHUD"));
-	if (WBPPlayerHudFinder.Succeeded())
+	PlayerHudWidget = NewObject<UPlayerHUDWidget>(UPlayerHUDWidget::StaticClass());
+	
+	if (PlayerHudWidget != nullptr)
 	{
-		HudClass = WBPPlayerHudFinder.Class;
-
-		/*if (HudClass)
-		{
-			PlayerHudWidget = CreateWidget<UUserWidget>(GetWorld(), HudClass);
-
-			PlayerHudWidget->AddToViewport();
-		}*/
+		PlayerHudWidget->AddToViewport();
 	}
 	else
 	{
-		HudClass = nullptr;
 		PlayerHudWidget = nullptr;
 	}
 }
@@ -90,35 +84,14 @@ void APongHUD::SetAIScored(int value)
 {
 	if (PlayerHudWidget != nullptr)
 	{
-		UClass* WidgetHudClass = PlayerHudWidget->GetClass();
-		if (WidgetHudClass != nullptr)
-		{
-			//UFunction* Func = PlayerHudWidget->GetClass()->FindFunctionByName(FName("UpdatePlayerScore"));
-			UFunction* Func = WidgetHudClass->FindFunctionByName(FName("UpdatePlayerScore"));
-			if (Func == nullptr) { return; }
-
-			FStructOnScope FuncParam(Func);
-			FProperty* ReturnProp = nullptr;
-
-			for (TFieldIterator<FProperty> It(Func); It; ++It)
-			{
-				FProperty* Prop = *It;
-				if (Prop->HasAnyPropertyFlags(CPF_ReturnParm))
-				{
-					ReturnProp = Prop;
-				}
-				else
-				{
-					//FillParam here            
-				}
-			}
-
-			PlayerHudWidget->ProcessEvent(Func, FuncParam.GetStructMemory());
-		}
+		PlayerHudWidget->SetAIScore(value);
 	}
 }
 
 void APongHUD::SetPlayerScored(int value)
 {
-	
+	if (PlayerHudWidget != nullptr)
+	{
+		PlayerHudWidget->SetPlayerScore(value);
+	}
 }

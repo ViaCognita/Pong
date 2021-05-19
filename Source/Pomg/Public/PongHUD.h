@@ -6,7 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "PongHUD.generated.h"
 
-class UUserWidget;
+class UPlayerHUDWidget;
 
 /**
  * 
@@ -29,7 +29,6 @@ public:
 	void SetPlayerScored(int value);
 
 private:
-	
-	TSubclassOf<UUserWidget> HudClass;
-	UUserWidget* PlayerHudWidget;
+
+	UPlayerHUDWidget* PlayerHudWidget;
 };

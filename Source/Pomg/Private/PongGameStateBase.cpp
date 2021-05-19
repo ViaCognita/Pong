@@ -81,7 +81,7 @@ void APongGameStateBase::AddAIPoint()
 	// Update the HUD.
 	APongHUD* Hud = Cast<APongHUD>(GameMode->HUDClass);
 
-	//Hud->SetAIScored(AIScore);
+	Hud->SetAIScored(AIScore);
 
 	// Change game state.
 	CurrentState = EPongStates::EWaitingToStart;
