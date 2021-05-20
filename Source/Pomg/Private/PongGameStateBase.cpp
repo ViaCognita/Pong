@@ -5,6 +5,7 @@
 #include "Ball.h"
 #include "PongGameModeBase.h"
 #include "PongHUD.h"
+#include "Kismet/GameplayStatics.h"
 
 APongGameStateBase::APongGameStateBase()
 {
@@ -69,7 +70,7 @@ void APongGameStateBase::AddAIPoint()
 {
 	APongGameModeBase* GameMode = Cast<APongGameModeBase>(GetWorld()->GetAuthGameMode());
 
-	// Increase AI score.
+	// Increase AI Score.
 	AIScore++;
 
 	// Update who has made the last score.
@@ -79,7 +80,7 @@ void APongGameStateBase::AddAIPoint()
 	GameMode->StopTheBall();
 
 	// Update the HUD.
-	APongHUD* Hud = Cast<APongHUD>(GameMode->HUDClass);
+	APongHUD* Hud = Cast<APongHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
 
 	Hud->SetAIScored(AIScore);
 
@@ -91,7 +92,7 @@ void APongGameStateBase::AddPlayerPoint()
 {
 	APongGameModeBase* GameMode = Cast<APongGameModeBase>(GetWorld()->GetAuthGameMode());
 
-	// Increase AI score.
+	// Increase Player Score.
 	PlayerScore++;
 
 	// Update who has made the last score.
@@ -101,6 +102,9 @@ void APongGameStateBase::AddPlayerPoint()
 	GameMode->StopTheBall();
 
 	// Update the HUD.
+	APongHUD* Hud = Cast<APongHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
+
+	Hud->SetPlayerScored(PlayerScore);
 
 	// Change game state.
 	CurrentState = EPongStates::EWaitingToStart;

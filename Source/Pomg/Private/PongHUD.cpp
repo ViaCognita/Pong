@@ -25,11 +25,14 @@ APongHUD::APongHUD()
 	else
 		TextFont = nullptr;
 
-	PlayerHudWidget = NewObject<UPlayerHUDWidget>(UPlayerHUDWidget::StaticClass());
-	
-	if (PlayerHudWidget != nullptr)
+	// PlayerHudWidget must be a cast from the UMG.UserWidget.
+	// The following line doesn't work.
+	//PlayerHudWidget = NewObject<UPlayerHUDWidget>(UPlayerHUDWidget::StaticClass());
+
+	ConstructorHelpers::FClassFinder<UUserWidget> WBPPlayerHudFinder(TEXT("/Game/Blueprint/Widgets/UI/UMG_PlayerHUD"));
+	if (WBPPlayerHudFinder.Succeeded())
 	{
-		PlayerHudWidget->AddToViewport();
+		HudClass = WBPPlayerHudFinder.Class;
 	}
 	else
 	{
@@ -37,47 +40,19 @@ APongHUD::APongHUD()
 	}
 }
 
-void APongHUD::DrawHUD()
+// Called when the game starts or when spawned
+void APongHUD::BeginPlay()
 {
-	// Call the parent's version of DrawHUD.
-	Super::DrawHUD();
+	Super::BeginPlay();
 
-	//FVector2D ScreenDimensions = FVector2D(Canvas->SizeX, Canvas->SizeY);
-	//FVector2D PlayerScoreTextSize;
-	//FVector2D AIScoreTextSize;
-	//FVector2D StartTextSize;
+	if (HudClass)
+	{
+		Widget = CreateWidget<UUserWidget>(GetWorld(), HudClass);
 
-	//FString PlayerScoreString;
-	//FString AIScoreString;
+		Widget->AddToViewport();
 
-	//float TextScale = 1.0f;
-
-	//// Player's and AI's score string.
-	//PlayerScoreString = FString::FromInt(PlayerScore);
-	//AIScoreString = FString::FromInt(AIScore);
-
-	//// Player's score text size.
-	//GetTextSize(PlayerScoreString, PlayerScoreTextSize.X, PlayerScoreTextSize.Y, ScoreFont);
-	//// AI's score text size.
-	//GetTextSize(AIScoreString, AIScoreTextSize.X, AIScoreTextSize.Y, ScoreFont);
-
-	//// Draw score.
-	//FVector2D sPlayerLoc;
-	//GetOwningPlayerController()->ProjectWorldLocationToScreen(FVector(530.0f, -600.0f, 950.0f), sPlayerLoc);
-
-	//FVector2D sAILoc;
-	//GetOwningPlayerController()->ProjectWorldLocationToScreen(FVector(530.0f, -20.0f, 950.0f), sAILoc);
-
-	//DrawText(PlayerScoreString, FColor::White, sPlayerLoc.X, sPlayerLoc.Y, TextFont, TextScale);
-	//DrawText(AIScoreString, FColor::White, sAILoc.X, sAILoc.Y, TextFont, TextScale);
-
-	//APongGameStateBase* GameState = Cast<APongGameStateBase>(UGameplayStatics::GetGameState(this));
-
-	//if (GameState->GetCurrentState() == EPongStates::EWaitingToStart)
-	//{
-	//	GetTextSize(TEXT("PLAY"), StartTextSize.X, StartTextSize.Y, TextFont);
-	//	DrawText(TEXT("PLAY"), FColor::White, (ScreenDimensions.X - StartTextSize.X) / 2.0f, (ScreenDimensions.Y - StartTextSize.Y) / 2.0f, TextFont, TextScale);
-	//}	
+		PlayerHudWidget = Cast<UPlayerHUDWidget>(Widget);
+	}
 }
 
 void APongHUD::SetAIScored(int value)

@@ -17,6 +17,8 @@ class POMG_API UPlayerHUDWidget : public UUserWidget
 public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* Player_Score;
+	
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* AI_Score;
 
 	void SetPlayerScore(int NewScore);
