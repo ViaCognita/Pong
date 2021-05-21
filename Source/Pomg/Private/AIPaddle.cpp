@@ -73,11 +73,16 @@ float AAIPaddle::ComputeBallZCoordinate() const
 
 void AAIPaddle::MovePaddle(float direction)
 {
-	float Scale = 100.0f;
+	float z = GetActorLocation().Z;
 
-	FVector DirectionVector = FVector(0.0f, 0.0f, direction);
+	if ((z > -310) && (z < 590))
+	{
+		float Scale = 100.0f;
 
-	OurMovementComponent->AddInputVector(DirectionVector * Scale);
+		FVector DirectionVector = FVector(0.0f, 0.0f, direction);
+
+		OurMovementComponent->AddInputVector(DirectionVector * Scale);
+	}
 }
 
 // Called every frame
