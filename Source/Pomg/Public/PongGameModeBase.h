@@ -25,11 +25,12 @@ public:
 	void LaunchTheBallToPlayer();
 	void LaunchTheBallToAI();
 
-	void StopTheBall();
+	void ResetTheBall();
 
 private:
 	
 	ABall* CurrentBall;
+	FVector BallStartLocation;
 
 	void LaunchTheBall(float YDirection);
 	

@@ -76,8 +76,8 @@ void APongGameStateBase::AddAIPoint()
 	// Update who has made the last score.
 	LastScore = ELastScored::EArtificialIntelligence;
 
-	// Stop the ball.
-	GameMode->StopTheBall();
+	// Stop the ball and move it to its start location.
+	GameMode->ResetTheBall();
 
 	// Update the HUD.
 	APongHUD* Hud = Cast<APongHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
@@ -98,8 +98,8 @@ void APongGameStateBase::AddPlayerPoint()
 	// Update who has made the last score.
 	LastScore = ELastScored::EPlayer;
 
-	// Stop the ball.
-	GameMode->StopTheBall();
+	// Stop the ball and move it to its start location.
+	GameMode->ResetTheBall();
 
 	// Update the HUD.
 	APongHUD* Hud = Cast<APongHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());

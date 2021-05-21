@@ -19,6 +19,8 @@ APongGameModeBase::APongGameModeBase()
 	// HUD class this game uses.
 	// We don't need to do anything else to use our HUD in the Game.
 	HUDClass = APongHUD::StaticClass();
+
+	BallStartLocation = FVector(0.0f, 0.0f, 250.0f);
 }
 
 
@@ -30,7 +32,7 @@ void APongGameModeBase::StartPlay()
 	if (World)
 	{		
 		// Spawn the ball into the world.
-		CurrentBall = World->SpawnActor<ABall>(ABall::StaticClass(), FVector(0.0f, 0.0f, 250.0f), FRotator::ZeroRotator);
+		CurrentBall = World->SpawnActor<ABall>(ABall::StaticClass(), BallStartLocation, FRotator::ZeroRotator);
 
 		LaunchTheBallToPlayer();
 
@@ -57,9 +59,11 @@ void APongGameModeBase::LaunchTheBallToAI()
 	LaunchTheBall(1.0f);
 }
 
-void APongGameModeBase::StopTheBall()
+void APongGameModeBase::ResetTheBall()
 {
 	CurrentBall->StopMovement();
+
+	CurrentBall->SetActorLocation(BallStartLocation);
 }
 
 void APongGameModeBase::LaunchTheBall(float YDirection)
