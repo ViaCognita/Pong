@@ -59,7 +59,9 @@ void APaddle::Tick(float DeltaTime)
 	if (!CurrentVelocity.IsZero())
 	{
 		const FVector NewLocation = GetActorLocation() + (CurrentVelocity * DeltaTime);
-		SetActorLocation(NewLocation);
+
+		if ((NewLocation.Z > -310) && (NewLocation.Z < 590))
+			SetActorLocation(NewLocation);
 	}
 
 }
