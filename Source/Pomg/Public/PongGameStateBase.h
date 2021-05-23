@@ -6,13 +6,15 @@
 #include "GameFramework/GameStateBase.h"
 #include "PongGameStateBase.generated.h"
 
+class UUserWidget;
+
 
 enum class EPongStates
 {
-	EReset,
 	EWaitingToStart,
 	EPlaying,
-	EPushBall
+	EPaused,
+	EEnded
 };
 
 enum class ELastScored
@@ -34,6 +36,8 @@ public:
 
 	APongGameStateBase();
 
+	void StartGame();
+
 	//Called when play begins
 	virtual void BeginPlay() override;
 
@@ -47,8 +51,11 @@ public:
 
 	void AddPlayerPoint();
 
-private:
+	void ResetGame();
 
+private:
+	TSubclassOf<UUserWidget> MenuClass;
+	
 	EPongStates CurrentState;
 
 	// Reference to the controller used for the paddle
@@ -60,4 +67,14 @@ private:
 
 	// Who has made the last score.
 	ELastScored LastScore;
+
+	int MaxScore;
+
+	bool IsGameEnded();
+
+	void GameEnded();
+
+	void UpdateHud();
+
+	void StartPlaying();
 };
