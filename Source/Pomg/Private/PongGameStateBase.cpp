@@ -64,6 +64,9 @@ void APongGameStateBase::StartGame()
 	// Disable mouse cursor.
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = false;
 
+	// Unset the game to pause.
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetPause(false);
+
 	// Launch the ball
 	StartPlaying();
 }
@@ -144,6 +147,8 @@ void APongGameStateBase::GameEnded()
 {
 	if (MenuClass)
 	{
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetPause(true);
+
 		UUserWidget* Widget = CreateWidget<UUserWidget>(GetWorld(), MenuClass);
 
 		Widget->AddToViewport();
