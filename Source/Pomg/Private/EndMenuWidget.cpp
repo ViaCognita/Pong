@@ -8,6 +8,7 @@
 
 void UEndMenuWidget::NativeConstruct()
 {
+	// On New Game button clicked, run NewGameClicked method.
 	Button_NewGame->OnClicked.AddUniqueDynamic(this, &UEndMenuWidget::NewGameClicked);
 }
 
@@ -22,8 +23,6 @@ void UEndMenuWidget::NewGameClicked()
 	if (world)
 	{
 		APongGameStateBase* GameState = Cast<APongGameStateBase>(world->GetGameState());
-
-		GameState->ResetGame();
 
 		RemoveFromViewport();
 

@@ -12,12 +12,13 @@
 
 APongGameModeBase::APongGameModeBase()
 {
+	// Default Pawn for this game.
 	DefaultPawnClass = APaddle::StaticClass();
 
+	// Game State class.
 	GameStateClass = APongGameStateBase::StaticClass();
 
 	// HUD class this game uses.
-	// We don't need to do anything else to use our HUD in the Game.
 	HUDClass = APongHUD::StaticClass();
 }
 
@@ -31,6 +32,7 @@ void APongGameModeBase::StartPlay()
 	{
 		APongGameStateBase* PongGameState = World->GetGameState<APongGameStateBase>();
 
+		// Init the game on Game State.
 		PongGameState->StartGame();
 	}
 }

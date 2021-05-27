@@ -18,12 +18,12 @@ inline bool instanceof(const T*) {
 // Sets default values
 ABall::ABall()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	VisualComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisualComp"));
 	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollComp"));
-	
+
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> VisualAsset(TEXT("/Game/Geometry/Meshes/Ball_mesh.Ball_mesh"));
 
 	if (VisualAsset.Succeeded())
@@ -40,7 +40,7 @@ ABall::ABall()
 
 	RootComponent = CollisionComponent;
 	VisualComponent->SetupAttachment(CollisionComponent);
-	
+
 	VisualComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	CollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel1); // ECC_GameTraceChannel1 is my Projectile Object Type.
@@ -67,7 +67,7 @@ ABall::ABall()
 void ABall::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 void ABall::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
@@ -123,7 +123,7 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 			ProjectileMovementComponent->Velocity = Direction * ProjectileMovementComponent->MaxSpeed;
 		}
 		// AI Paddle Hit.
-		else if(AAIPaddle* AIPaddle = Cast<AAIPaddle>(OtherActor))
+		else if (AAIPaddle* AIPaddle = Cast<AAIPaddle>(OtherActor))
 		{
 			float PaddleVelocity = ABall::Reduce(AIPaddle->GetZVelocity());
 
@@ -151,6 +151,7 @@ void ABall::NotifyActorBeginOverlap(AActor* OtherActor)
 
 	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Overlaps: %s"), *OtherActor->GetName()));
 
+	// AI makes a point.
 	if (OtherActor->GetName().Equals("Goal_AI"))
 	{
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Goal_AI"));
@@ -163,6 +164,7 @@ void ABall::NotifyActorBeginOverlap(AActor* OtherActor)
 			GameState->AddAIPoint();
 		}
 	}
+	// Player makes a point.
 	else if (OtherActor->GetName().Equals("Goal_Player"))
 	{
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Goal_Player"));

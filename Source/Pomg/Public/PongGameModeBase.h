@@ -9,7 +9,7 @@
 class ABall;
 
 /**
- * 
+ *
  */
 UCLASS()
 class POMG_API APongGameModeBase : public AGameModeBase

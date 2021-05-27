@@ -40,7 +40,7 @@ APongGameStateBase::APongGameStateBase()
 	// How has scored last.
 	LastScore = ELastScored::ENone;
 
-	// End menu class.
+	// Get End menu class to instantiate later and show it on the view port.
 	ConstructorHelpers::FClassFinder<UUserWidget> WBPEndMenuFinder(TEXT("/Game/Blueprint/Widgets/UI/UMG_EndMenu"));
 	if (WBPEndMenuFinder.Succeeded())
 	{
@@ -97,20 +97,15 @@ void APongGameStateBase::Tick(float DeltaTime)
 
 	switch (CurrentState)
 	{
-		case EPongStates::EWaitingToStart:
-			break;
-		case EPongStates::EPlaying:
-			break;
-		case EPongStates::EEnded:
-			GameEnded();
-			break;
+	case EPongStates::EWaitingToStart:
+		break;
+	case EPongStates::EPlaying:
+		break;
+	case EPongStates::EEnded:
+		GameEnded();
+		break;
 	}
 
-}
-
-EPongStates APongGameStateBase::GetCurrentState()
-{
-	return CurrentState;
 }
 
 void APongGameStateBase::AddAIPoint()
@@ -118,7 +113,14 @@ void APongGameStateBase::AddAIPoint()
 	// Increase AI Score.
 	AIScore++;
 
+	// Update the HUD with the new score.
 	UpdateHud();
+
+	// Update who has made the last score.
+	LastScore = ELastScored::EArtificialIntelligence;
+
+	// Stop the ball and move it to its start location.
+	ResetTheBall();
 }
 
 void APongGameStateBase::AddPlayerPoint()
@@ -126,14 +128,17 @@ void APongGameStateBase::AddPlayerPoint()
 	// Increase Player Score.
 	PlayerScore++;
 
+	// Update the HUD with the new score.
 	UpdateHud();
+
+	// Update who has made the last score.
+	LastScore = ELastScored::EPlayer;
+
+	// Stop the ball and move it to its start location.
+	ResetTheBall();
 }
 
-void APongGameStateBase::ResetGame()
-{
-}
-
-bool APongGameStateBase::IsGameEnded()
+inline bool APongGameStateBase::IsGameEnded()
 {
 	if ((PlayerScore == MaxScore) || (AIScore == MaxScore))
 		return true;
@@ -145,35 +150,34 @@ void APongGameStateBase::GameEnded()
 {
 	if (EndMenuClass)
 	{
-		UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetPause(true);
-
+		// Get and show the end menu on view port.
 		UUserWidget* Widget = CreateWidget<UUserWidget>(GetWorld(), EndMenuClass);
-
 		Widget->AddToViewport();
 
+		// Set input mode to UI to avoid continue moving the Player's paddle.
 		UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
+		// Cast the End Menu Widget to its C++ parent class to let us interact with the Widget.
 		UEndMenuWidget* MenuWidget = Cast<UEndMenuWidget>(Widget);
 
+		// Show custom end game's message.
 		if (AIScore == MaxScore)
 			MenuWidget->SetEndMessage(FText::FromString("You lose!"));
 		else
 			MenuWidget->SetEndMessage(FText::FromString("You Win!"));
 
+		// Show cursor.
 		UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = true;
+
+		// Set game to paused.
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetPause(true);
 	}
 
 }
 
 void APongGameStateBase::UpdateHud()
 {
-	// Update who has made the last score.
-	LastScore = ELastScored::EPlayer;
-
-	// Stop the ball and move it to its start location.
-	ResetTheBall();
-
-	// Update the HUD.
+	// Get HUD reference and update it.
 	APongHUD* Hud = Cast<APongHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
 
 	Hud->SetPlayerScored(PlayerScore);
@@ -187,6 +191,7 @@ void APongGameStateBase::StartPlaying()
 	UWorld* const world = GetWorld();
 	if (world)
 	{
+		// Launch the ball depending on who has made the last score.
 		if (LastScore == ELastScored::EArtificialIntelligence)
 			LaunchTheBallToAI();
 		else
@@ -203,6 +208,7 @@ void APongGameStateBase::InitLevelActors()
 		// Spawn the ball into the world.
 		TheBall = World->SpawnActor<ABall>(ABall::StaticClass(), BallStartLocation, FRotator::ZeroRotator);
 
+		// Get AI's Paddle reference.
 		TArray<AActor*> FoundActors;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAIPaddle::StaticClass(), FoundActors);
 
@@ -212,10 +218,12 @@ void APongGameStateBase::InitLevelActors()
 
 			if (AIPaddle != nullptr)
 			{
-				AIPaddle->SetGameBall(TheBall);
+				AIPaddle->SetGameBallReference(TheBall);
 				break;
 			}
 		}
+
+		// Get Player's paddle reference.
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APaddle::StaticClass(), FoundActors);
 
 		for (AActor* TActor : FoundActors)
@@ -238,13 +246,6 @@ void APongGameStateBase::LaunchTheBallToAI()
 	LaunchTheBall(1.0f);
 }
 
-void APongGameStateBase::ResetTheBall()
-{
-	TheBall->StopMovement();
-
-	TheBall->SetActorLocation(BallStartLocation);
-}
-
 void APongGameStateBase::LaunchTheBall(float YDirection)
 {
 	if (TheBall != nullptr)
@@ -253,3 +254,11 @@ void APongGameStateBase::LaunchTheBall(float YDirection)
 		TheBall->FireInDirection(LaunchDirection);
 	}
 }
+
+void APongGameStateBase::ResetTheBall()
+{
+	TheBall->StopMovement();
+
+	TheBall->SetActorLocation(BallStartLocation);
+}
+

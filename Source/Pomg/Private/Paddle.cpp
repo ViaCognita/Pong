@@ -87,7 +87,6 @@ void APaddle::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent
 			{
 				FBoxSphereBounds Bounds = SM->ExtendedBounds;
 
-				//CollisionComponent->SetRelativeLocation(Bounds.Origin);
 				CollisionComponent->SetBoxExtent(Bounds.BoxExtent);
 			}
 		}

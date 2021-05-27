@@ -24,6 +24,8 @@ protected:
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD Properties")
 	UFont* ScoreFont;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD Properties")
 	UFont* TextFont;
 
 	APongHUD();
@@ -33,8 +35,12 @@ public:
 
 private:
 
+	// HUD Widgent parent class.
 	UPlayerHUDWidget* PlayerHudWidget;
 
+	// HUD Widget class.
 	TSubclassOf<UUserWidget> HudClass;
+
+	// HUD Widget instance.
 	UUserWidget* Widget;
 };

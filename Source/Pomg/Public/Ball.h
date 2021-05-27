@@ -14,8 +14,8 @@ UCLASS()
 class POMG_API ABall : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ABall();
 
@@ -34,7 +34,7 @@ protected:
 
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -48,11 +48,14 @@ public:
 	UFUNCTION()
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
+	// Returns ball Velocity vector.
 	FVector GetVelocity() const;
 
+	// Stops the ball setting its Projectile Movement Component Velocity vector to ZeroVector.
 	void StopMovement();
 
 private:
+	// Returns 'value' to a value between [-1.0, 1.0].
 	float Reduce(float value) const;
 
 };

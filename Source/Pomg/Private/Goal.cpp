@@ -9,12 +9,12 @@
 // Sets default values
 AGoal::AGoal()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollComp"));
 	CollisionComponent->SetBoxExtent(FVector(30.0f, 30.0f, 30.0f));
-	
+
 	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	CollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel3);
 	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -34,7 +34,7 @@ AGoal::AGoal()
 void AGoal::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -50,6 +50,7 @@ void AGoal::NotifyActorBeginOverlap(AActor* OtherActor)
 
 	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Overlaps: %s"), *OtherActor->GetName()));
 
+	// When the ball hits this, play a sound.
 	if (ABall* Ball = Cast<ABall>(OtherActor))
 	{
 		if (HitSound != nullptr)

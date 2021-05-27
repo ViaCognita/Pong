@@ -10,7 +10,7 @@ class UTextBlock;
 class UButton;
 
 /**
- * 
+ *
  */
 UCLASS()
 class POMG_API UEndMenuWidget : public UUserWidget
@@ -21,6 +21,7 @@ public:
 
 	void NativeConstruct() override;
 
+	// Set the end message: if the player has won or if she/he has lost.
 	void SetEndMessage(FText Message);
 
 protected:
@@ -33,5 +34,5 @@ protected:
 
 	UFUNCTION()
 	void NewGameClicked();
-	
+
 };

@@ -7,7 +7,7 @@
 #include "PaddlePawnMovementComponent.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class POMG_API UPaddlePawnMovementComponent : public UPawnMovementComponent
@@ -16,5 +16,5 @@ class POMG_API UPaddlePawnMovementComponent : public UPawnMovementComponent
 
 public:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
+
 };

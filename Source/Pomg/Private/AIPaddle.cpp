@@ -15,7 +15,7 @@ class UPaddlePawnMovementComponent;
 // Sets default values
 AAIPaddle::AAIPaddle()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollComp"));
@@ -48,7 +48,7 @@ AAIPaddle::AAIPaddle()
 void AAIPaddle::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 float AAIPaddle::ComputeBallZCoordinate() const
@@ -56,18 +56,18 @@ float AAIPaddle::ComputeBallZCoordinate() const
 	float z = 0.0f;
 	// 1. Get paddle location.
 	FVector PaddleLocation = GetActorLocation();
-	
+
 	// 2. Get ball location.
 	FVector BallLocation = GameBall->GetActorLocation();
-	
+
 	// 3. Get ball velocity.
 	FVector BallVelocty = GameBall->GetVelocity();
 
 	// 4. Compute ball new Z location.
 	float t = (PaddleLocation.Y - BallLocation.Y) / BallVelocty.Y;
-	
+
 	z = BallVelocty.Z * t + BallLocation.Z;
-	
+
 	return z;
 }
 
@@ -110,7 +110,7 @@ void AAIPaddle::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void AAIPaddle::SetGameBall(ABall* Ball)
+void AAIPaddle::SetGameBallReference(ABall* Ball)
 {
 	this->GameBall = Ball;
 }
