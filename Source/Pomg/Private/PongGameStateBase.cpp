@@ -16,67 +16,73 @@ APongGameStateBase::APongGameStateBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Initializate the ball and its start location.
+	TheBall = nullptr;
+	BallStartLocation = FVector(0.0f, 0.0f, 250.0f);
+
+	// Initialize Paddle's initial location.
+	PlayerLocation = FVector(0.0f, -500.0f, 170.0f);
+	AILocation = FVector(0.0f, 500.0f, 170.0f);
+
+	// This is the first start.
+	IsFirstStart = true;
+
+	// Initial state: waiting to start.
 	CurrentState = EPongStates::EWaitingToStart;
 
+	// Initial scores.
 	AIScore = 0;
 	PlayerScore = 0;
 
-	MaxScore = 1;
+	// Maximum score.
+	MaxScore = 1; //TODO: Ideally we could set this on Unreal editor.
 
+	// How has scored last.
 	LastScore = ELastScored::ENone;
-	
-	ConstructorHelpers::FClassFinder<UUserWidget> WBPMenuFinder(TEXT("/Game/Blueprint/Widgets/UI/UMG_EndMenu"));
-	if (WBPMenuFinder.Succeeded())
+
+	// End menu class.
+	ConstructorHelpers::FClassFinder<UUserWidget> WBPEndMenuFinder(TEXT("/Game/Blueprint/Widgets/UI/UMG_EndMenu"));
+	if (WBPEndMenuFinder.Succeeded())
 	{
-		MenuClass = WBPMenuFinder.Class;
+		EndMenuClass = WBPEndMenuFinder.Class;
 	}
 }
 
 void APongGameStateBase::StartGame()
 {
-	// Reset the scores and update the HUD.
-	PlayerScore = 0;
-	AIScore = 0;
-
-	UpdateHud();
-
-	// Change game state to Waiting to start.
-	CurrentState = EPongStates::EWaitingToStart;
-
-	// Move paddles to initial location.
-	FVector PlayerLocation(0.0f, -500.0f, 170.0f);
-	FVector AILocation(0.0f, 500.0f, 170.0f);
-
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APawn::StaticClass(), FoundActors);
-
-	for (AActor* TActor : FoundActors)
+	if (IsFirstStart)
 	{
-		if (AAIPaddle* AIPaddle = Cast<AAIPaddle>(TActor))
-			AIPaddle->SetActorLocation(AILocation);
-		else if (APaddle* PlayerPaddle = Cast<APaddle>(TActor))
-			PlayerPaddle->SetActorLocation(PlayerLocation);
+		InitLevelActors();
+		IsFirstStart = false;
 	}
+	else
+	{
+		// Reset the scores and update the HUD.
+		PlayerScore = 0;
+		AIScore = 0;
 
-	// Enable the keyboard to let the player play.
-	UWidgetBlueprintLibrary::SetInputMode_GameOnly(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		UpdateHud();
 
-	// Disable mouse cursor.
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = false;
+		// Change game state to Waiting to start.
+		CurrentState = EPongStates::EWaitingToStart;
 
-	// Unset the game to pause.
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetPause(false);
+		if (AIPaddle)
+			AIPaddle->SetActorLocation(AILocation);
+		if (PlayerPaddle)
+			PlayerPaddle->SetActorLocation(PlayerLocation);
+
+		// Enable the keyboard to let the player play.
+		UWidgetBlueprintLibrary::SetInputMode_GameOnly(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+		// Disable mouse cursor.
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = false;
+
+		// Unset the game to pause.
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetPause(false);
+	}
 
 	// Launch the ball
 	StartPlaying();
-}
-
-void APongGameStateBase::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// Get Player's controller.
-	Controller = GetWorld()->GetFirstPlayerController();
 }
 
 void APongGameStateBase::Tick(float DeltaTime)
@@ -84,35 +90,27 @@ void APongGameStateBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// Change game state.
-	if (CurrentState != EPongStates::EPaused)
-	{
-		if (IsGameEnded())
-			CurrentState = EPongStates::EEnded;
-		else
-			CurrentState = EPongStates::EWaitingToStart;
+	if (IsGameEnded())
+		CurrentState = EPongStates::EEnded;
+	else
+		CurrentState = EPongStates::EWaitingToStart;
 
-		switch (CurrentState)
-		{
+	switch (CurrentState)
+	{
 		case EPongStates::EWaitingToStart:
-			if (Controller->WasInputKeyJustReleased(EKeys::SpaceBar))
-			{
-				StartPlaying();
-			}
 			break;
 		case EPongStates::EPlaying:
 			break;
 		case EPongStates::EEnded:
-			CurrentState = EPongStates::EPaused;
 			GameEnded();
 			break;
-		}
 	}
 
 }
 
 EPongStates APongGameStateBase::GetCurrentState()
 {
-    return CurrentState;
+	return CurrentState;
 }
 
 void APongGameStateBase::AddAIPoint()
@@ -145,11 +143,11 @@ bool APongGameStateBase::IsGameEnded()
 
 void APongGameStateBase::GameEnded()
 {
-	if (MenuClass)
+	if (EndMenuClass)
 	{
 		UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetPause(true);
 
-		UUserWidget* Widget = CreateWidget<UUserWidget>(GetWorld(), MenuClass);
+		UUserWidget* Widget = CreateWidget<UUserWidget>(GetWorld(), EndMenuClass);
 
 		Widget->AddToViewport();
 
@@ -169,13 +167,11 @@ void APongGameStateBase::GameEnded()
 
 void APongGameStateBase::UpdateHud()
 {
-	APongGameModeBase* GameMode = Cast<APongGameModeBase>(GetWorld()->GetAuthGameMode());
-
 	// Update who has made the last score.
 	LastScore = ELastScored::EPlayer;
 
 	// Stop the ball and move it to its start location.
-	GameMode->ResetTheBall();
+	ResetTheBall();
 
 	// Update the HUD.
 	APongHUD* Hud = Cast<APongHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
@@ -191,12 +187,69 @@ void APongGameStateBase::StartPlaying()
 	UWorld* const world = GetWorld();
 	if (world)
 	{
-		APongGameModeBase* GameMode = Cast<APongGameModeBase>(world->GetAuthGameMode());
-
 		if (LastScore == ELastScored::EArtificialIntelligence)
-			GameMode->LaunchTheBallToAI();
+			LaunchTheBallToAI();
 		else
-			GameMode->LaunchTheBallToPlayer();
+			LaunchTheBallToPlayer();
 	}
 
+}
+
+void APongGameStateBase::InitLevelActors()
+{
+	UWorld* const World = GetWorld();
+	if (World)
+	{
+		// Spawn the ball into the world.
+		TheBall = World->SpawnActor<ABall>(ABall::StaticClass(), BallStartLocation, FRotator::ZeroRotator);
+
+		TArray<AActor*> FoundActors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAIPaddle::StaticClass(), FoundActors);
+
+		for (AActor* TActor : FoundActors)
+		{
+			AIPaddle = Cast<AAIPaddle>(TActor);
+
+			if (AIPaddle != nullptr)
+			{
+				AIPaddle->SetGameBall(TheBall);
+				break;
+			}
+		}
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APaddle::StaticClass(), FoundActors);
+
+		for (AActor* TActor : FoundActors)
+		{
+			PlayerPaddle = Cast<APaddle>(TActor);
+
+			if (PlayerPaddle != nullptr)
+				break;
+		}
+	}
+}
+
+void APongGameStateBase::LaunchTheBallToPlayer()
+{
+	LaunchTheBall(-1.0f);
+}
+
+void APongGameStateBase::LaunchTheBallToAI()
+{
+	LaunchTheBall(1.0f);
+}
+
+void APongGameStateBase::ResetTheBall()
+{
+	TheBall->StopMovement();
+
+	TheBall->SetActorLocation(BallStartLocation);
+}
+
+void APongGameStateBase::LaunchTheBall(float YDirection)
+{
+	if (TheBall != nullptr)
+	{
+		FVector LaunchDirection(0.0f, YDirection, 0.0f);
+		TheBall->FireInDirection(LaunchDirection);
+	}
 }

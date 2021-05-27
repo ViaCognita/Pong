@@ -21,17 +21,4 @@ public:
 	APongGameModeBase();
 
 	virtual void StartPlay() override;
-
-	void LaunchTheBallToPlayer();
-	void LaunchTheBallToAI();
-
-	void ResetTheBall();
-
-private:
-	
-	ABall* CurrentBall;
-	FVector BallStartLocation;
-
-	void LaunchTheBall(float YDirection);
-	
 };

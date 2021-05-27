@@ -7,13 +7,15 @@
 #include "PongGameStateBase.generated.h"
 
 class UUserWidget;
+class ABall;
+class AAIPaddle;
+class APaddle;
 
 
 enum class EPongStates
 {
 	EWaitingToStart,
 	EPlaying,
-	EPaused,
 	EEnded
 };
 
@@ -38,9 +40,6 @@ public:
 
 	void StartGame();
 
-	//Called when play begins
-	virtual void BeginPlay() override;
-
 	// Tick called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -53,13 +52,37 @@ public:
 
 	void ResetGame();
 
+	void LaunchTheBallToPlayer();
+	void LaunchTheBallToAI();
+
+	void ResetTheBall();
+
 private:
-	TSubclassOf<UUserWidget> MenuClass;
+	// The ball.
+	ABall* TheBall;
+
+	// Ball's start location in level.
+	FVector BallStartLocation;
+
+	// Player's paddle start location.
+	FVector PlayerLocation;
+	// AI's paddle start location.
+	FVector AILocation;
+
+	// Player's paddle reference.
+	APaddle* PlayerPaddle;
+
+	// AI's paddle reference.
+	AAIPaddle* AIPaddle;
 	
+	// Class for end game menu.
+	TSubclassOf<UUserWidget> EndMenuClass;
+	
+	// Current game state.
 	EPongStates CurrentState;
 
-	// Reference to the controller used for the paddle
-	class APlayerController* Controller;
+	// To know if this is the first time we start the game.
+	bool IsFirstStart;
 
 	// Values to store the current score
 	int AIScore;
@@ -70,6 +93,8 @@ private:
 
 	int MaxScore;
 
+	void InitLevelActors();
+
 	bool IsGameEnded();
 
 	void GameEnded();
@@ -77,4 +102,6 @@ private:
 	void UpdateHud();
 
 	void StartPlaying();
+
+	void LaunchTheBall(float YDirection);
 };
