@@ -20,8 +20,6 @@ public:
 	ABall();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UBoxComponent* CollisionComponent;
@@ -35,8 +33,6 @@ protected:
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
 public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 	// Function that initializes the ball's velocity in the shoot direction.
 	void FireInDirection(const FVector& ShootDirection);

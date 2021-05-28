@@ -10,7 +10,7 @@
 ABound::ABound()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollComp"));
 	CollisionComponent->SetBoxExtent(FVector(30.0f, 30.0f, 30.0f));
@@ -30,13 +30,6 @@ ABound::ABound()
 
 }
 
-// Called when the game starts or when spawned
-void ABound::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
 void ABound::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
@@ -51,12 +44,5 @@ void ABound::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveC
 			}
 		}
 	}
-}
-
-// Called every frame
-void ABound::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
 }
 

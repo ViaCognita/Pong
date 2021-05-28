@@ -44,13 +44,6 @@ AAIPaddle::AAIPaddle()
 
 }
 
-// Called when the game starts or when spawned
-void AAIPaddle::BeginPlay()
-{
-	Super::BeginPlay();
-
-}
-
 float AAIPaddle::ComputeBallZCoordinate() const
 {
 	float z = 0.0f;

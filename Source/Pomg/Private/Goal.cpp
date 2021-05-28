@@ -10,7 +10,7 @@
 AGoal::AGoal()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollComp"));
 	CollisionComponent->SetBoxExtent(FVector(30.0f, 30.0f, 30.0f));
@@ -27,20 +27,6 @@ AGoal::AGoal()
 	static ConstructorHelpers::FObjectFinder<USoundWave> HitSoundAsset(TEXT("/Game/Effects/pong-point.pong-point"));
 	if (HitSoundAsset.Succeeded())
 		HitSound = HitSoundAsset.Object;
-
-}
-
-// Called when the game starts or when spawned
-void AGoal::BeginPlay()
-{
-	Super::BeginPlay();
-
-}
-
-// Called every frame
-void AGoal::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 
 }
 

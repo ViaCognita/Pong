@@ -20,8 +20,6 @@ public:
 	ABound();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UBoxComponent* CollisionComponent;
@@ -29,10 +27,6 @@ protected:
 	/** called when projectile hits something */
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 private:
 	// Sound played when the ball hits this Paddle.

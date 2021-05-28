@@ -43,13 +43,6 @@ APaddle::APaddle()
 
 }
 
-// Called when the game starts or when spawned
-void APaddle::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
 // Called every frame
 void APaddle::Tick(float DeltaTime)
 {

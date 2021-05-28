@@ -19,7 +19,7 @@ inline bool instanceof(const T*) {
 ABall::ABall()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	VisualComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisualComp"));
 	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollComp"));
@@ -63,13 +63,6 @@ ABall::ABall()
 
 }
 
-// Called when the game starts or when spawned
-void ABall::BeginPlay()
-{
-	Super::BeginPlay();
-
-}
-
 void ABall::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	// Check if property is valid
@@ -93,13 +86,6 @@ void ABall::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 	}
 	// Then call the parent version of this function
 	Super::PostEditChangeProperty(PropertyChangedEvent);
-}
-
-// Called every frame
-void ABall::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
 }
 
 void ABall::FireInDirection(const FVector& ShootDirection)
