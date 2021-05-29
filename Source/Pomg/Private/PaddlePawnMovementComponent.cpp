@@ -13,7 +13,7 @@ void UPaddlePawnMovementComponent::TickComponent(float DeltaTime, enum ELevelTic
 		return;
 	}
 
-	// Get (and then clear) the movement vector that we set in ACollidingPawn::Tick
+	// Get (and then clear) the movement vector that we set in AAIPaddle::Tick
 	FVector DesiredMovementThisFrame = ConsumeInputVector().GetClampedToMaxSize(1.0f) * DeltaTime * 150.0f;
 	if (!DesiredMovementThisFrame.IsNearlyZero())
 	{
