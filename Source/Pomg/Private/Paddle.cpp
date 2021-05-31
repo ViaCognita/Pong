@@ -30,7 +30,7 @@ APaddle::APaddle()
 	CollisionComponent->OnComponentHit.AddDynamic(this, &APaddle::OnHit);
 
 	// Initialize paddle velocity.
-	CurrentVelocity.Z = 0.0f;
+	ZDirection = 0.0f;
 
 	// Create an instance of our movement component, and tell it to update our root component.
 	OurMovementComponent = CreateDefaultSubobject<UPaddlePawnMovementComponent>(TEXT("PaddleCustomMovementComponent"));
@@ -40,21 +40,6 @@ APaddle::APaddle()
 	static ConstructorHelpers::FObjectFinder<USoundWave> HitSoundAsset(TEXT("/Game/Effects/pong-paddle.pong-paddle"));
 	if (HitSoundAsset.Succeeded())
 		HitSound = HitSoundAsset.Object;
-
-}
-
-// Called every frame
-void APaddle::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	// Handle movement based on our "MoveZ" axis.
-	if (!CurrentVelocity.IsZero())
-	{
-		const FVector NewLocation = GetActorLocation() + (CurrentVelocity * DeltaTime);
-
-		SetActorLocation(NewLocation, true);
-	}
 
 }
 
@@ -114,10 +99,19 @@ void APaddle::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void APaddle::Move_ZAxis(float AxisValue)
 {
-	CurrentVelocity.Z = FMath::Clamp(AxisValue, -1.0f, 1.0f) * 100.0f;
+	if (AxisValue != 0.0f)
+	{
+		ZDirection = AxisValue;
+
+		float Scale = 100.0f; // TODO mover a propiedad para poder modificarla en el editor.
+
+		FVector DirectionVector = FVector(0.0f, 0.0f, AxisValue);
+
+		OurMovementComponent->AddInputVector(DirectionVector * Scale);
+	}
 }
 
 float APaddle::GetZVelocity() const
 {
-	return CurrentVelocity.Z;
+	return ZDirection;
 }

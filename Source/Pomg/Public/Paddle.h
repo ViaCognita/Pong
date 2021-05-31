@@ -29,7 +29,7 @@ protected:
 	UStaticMeshComponent* VisualComponent;
 
 	// Input variables
-	FVector CurrentVelocity;
+	float ZDirection;
 
 	// Use my own Pawn Movement Component implementation.
 	UPaddlePawnMovementComponent* OurMovementComponent;
@@ -43,10 +43,7 @@ protected:
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 

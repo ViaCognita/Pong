@@ -32,7 +32,7 @@ protected:
 	UStaticMeshComponent* VisualComponent;
 
 	// Input variables
-	FVector CurrentVelocity;
+	float ZDirection;
 
 	// Use my own Pawn Movement Component implementation.
 	UPaddlePawnMovementComponent* OurMovementComponent;

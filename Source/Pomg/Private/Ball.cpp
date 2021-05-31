@@ -102,7 +102,8 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 		// Paddle Hit.
 		if (APaddle* Paddle = Cast<APaddle>(OtherActor))
 		{
-			float PaddleVelocity = ABall::Reduce(Paddle->GetZVelocity());
+			//float PaddleVelocity = ABall::Reduce(Paddle->GetZVelocity());
+			float PaddleVelocity = Paddle->GetZVelocity();
 
 			FVector Direction = FVector(0.0f, 1.0f, PaddleVelocity);
 
@@ -111,7 +112,8 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 		// AI Paddle Hit.
 		else if (AAIPaddle* AIPaddle = Cast<AAIPaddle>(OtherActor))
 		{
-			float PaddleVelocity = ABall::Reduce(AIPaddle->GetZVelocity());
+			//float PaddleVelocity = ABall::Reduce(AIPaddle->GetZVelocity());
+			float PaddleVelocity = AIPaddle->GetZVelocity();
 
 			FVector Direction = FVector(0.0f, -1.0f, PaddleVelocity);
 
@@ -177,9 +179,9 @@ void ABall::StopMovement()
 
 float ABall::Reduce(float value) const
 {
-	if (value > 1.0f)
+	if (value >= 1.0f)
 		return 1.0f;
-	else if (value < -1.0f)
+	else if (value <= -1.0f)
 		return -1.0f;
 	else
 		return 0.0f;

@@ -31,7 +31,7 @@ AAIPaddle::AAIPaddle()
 	CollisionComponent->OnComponentHit.AddDynamic(this, &AAIPaddle::OnHit);
 
 	// Initialize paddle velocity.
-	CurrentVelocity.Z = 0.0f;
+	ZDirection = 0.0f;
 
 	// Create an instance of our movement component, and tell it to update our root component.
 	OurMovementComponent = CreateDefaultSubobject<UPaddlePawnMovementComponent>(TEXT("AIPaddleCustomMovementComponent"));
@@ -66,6 +66,8 @@ float AAIPaddle::ComputeBallZCoordinate() const
 
 void AAIPaddle::MovePaddle(float direction)
 {
+	ZDirection = direction;
+
 	float Scale = 100.0f; // TODO mover a propiedad para poder modificarla en el editor.
 
 	FVector DirectionVector = FVector(0.0f, 0.0f, direction);
@@ -151,6 +153,6 @@ void AAIPaddle::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 
 float AAIPaddle::GetZVelocity() const
 {
-	return CurrentVelocity.Z;
+	return ZDirection;
 }
 
