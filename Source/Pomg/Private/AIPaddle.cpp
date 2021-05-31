@@ -18,8 +18,8 @@ AAIPaddle::AAIPaddle()
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollComp"));
-	VisualComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisualComp"));
+	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("AIPaddleCollisionComponent"));
+	VisualComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AIPaddleVisualComponent"));
 
 	RootComponent = CollisionComponent;
 

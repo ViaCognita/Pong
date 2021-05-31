@@ -17,8 +17,8 @@ APaddle::APaddle()
 	// Set this pawn to be controlled by the lowest-numbered player
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
-	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollComp"));
-	VisualComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisualComp"));
+	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("PaddleCollisionComponent"));
+	VisualComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PaddleVisualComponent"));
 
 	RootComponent = CollisionComponent;
 
