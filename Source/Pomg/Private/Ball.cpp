@@ -122,11 +122,17 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 		// Bound Hit.
 		else
 		{
+			/*
 			ABound* bounds = Cast<ABound>(OtherActor);
 			// Reflecting vector: http://www.3dkingdoms.com/weekly/weekly.php?a=2
 			FVector ReflectedVelocity = (-2 * FVector::DotProduct(ProjectileMovementComponent->Velocity, NormalImpulse) * NormalImpulse + ProjectileMovementComponent->MaxSpeed);
 			// We only move on Y and Z axis.
 			ReflectedVelocity.X = 0.0f;
+
+			ProjectileMovementComponent->Velocity = ReflectedVelocity;
+			*/
+			FVector BallVelocity = ProjectileMovementComponent->Velocity;
+			FVector ReflectedVelocity(BallVelocity.X, BallVelocity.Y, -BallVelocity.Z);
 
 			ProjectileMovementComponent->Velocity = ReflectedVelocity;
 		}
