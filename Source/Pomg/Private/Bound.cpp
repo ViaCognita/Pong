@@ -18,6 +18,7 @@ ABound::ABound()
 	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	CollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel2); // ECC_GameTraceChannel2 is Bound Object Type.
 	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	CollisionComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block); // To block Paddle objects.
 	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Block); // ECC_GameTraceChannel1 is my Projectile Object Type.
 	CollisionComponent->OnComponentHit.AddDynamic(this, &ABound::OnHit);
 
