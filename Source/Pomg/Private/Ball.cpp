@@ -99,10 +99,12 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 	{
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Ball Hits: %s"), *OtherActor->GetName()));
 
+		/*
+		float Velocity = 0.0f;
+
 		// Paddle Hit.
 		if (APaddle* Paddle = Cast<APaddle>(OtherActor))
 		{
-			//float PaddleVelocity = ABall::Reduce(Paddle->GetZVelocity());
 			float PaddleVelocity = Paddle->GetZVelocity();
 
 			FVector Direction = FVector(0.0f, 1.0f, PaddleVelocity);
@@ -112,7 +114,6 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 		// AI Paddle Hit.
 		else if (AAIPaddle* AIPaddle = Cast<AAIPaddle>(OtherActor))
 		{
-			//float PaddleVelocity = ABall::Reduce(AIPaddle->GetZVelocity());
 			float PaddleVelocity = AIPaddle->GetZVelocity();
 
 			FVector Direction = FVector(0.0f, -1.0f, PaddleVelocity);
@@ -122,20 +123,92 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 		// Bound Hit.
 		else
 		{
-			/*
-			ABound* bounds = Cast<ABound>(OtherActor);
-			// Reflecting vector: http://www.3dkingdoms.com/weekly/weekly.php?a=2
-			FVector ReflectedVelocity = (-2 * FVector::DotProduct(ProjectileMovementComponent->Velocity, NormalImpulse) * NormalImpulse + ProjectileMovementComponent->MaxSpeed);
-			// We only move on Y and Z axis.
-			ReflectedVelocity.X = 0.0f;
-
-			ProjectileMovementComponent->Velocity = ReflectedVelocity;
-			*/
 			FVector BallVelocity = ProjectileMovementComponent->Velocity;
 			FVector ReflectedVelocity(BallVelocity.X, BallVelocity.Y, -BallVelocity.Z);
 
 			ProjectileMovementComponent->Velocity = ReflectedVelocity;
 		}
+		*/
+
+		/*
+		// Paddle Hit.
+		if (APaddle* Paddle = Cast<APaddle>(OtherActor))
+		{
+			Velocity = Paddle->GetZVelocity() * ProjectileMovementComponent->MaxSpeed;
+		}
+		// AI Paddle Hit.
+		else if (AAIPaddle* AIPaddle = Cast<AAIPaddle>(OtherActor))
+		{
+			Velocity = AIPaddle->GetZVelocity() * ProjectileMovementComponent->MaxSpeed;
+		}
+		// Bound Hit.
+		else
+		{
+			Velocity = ProjectileMovementComponent->Velocity.Z;
+		}
+
+		FVector BallVelocity = ProjectileMovementComponent->Velocity;
+
+		if (Velocity == 0.0f)
+		{
+			float random = FMath::RandRange(-1.0f, 1.0f);
+
+			if (random < 0.0f)
+				BallVelocity.Z = -1.0f * ProjectileMovementComponent->MaxSpeed;
+			else
+				BallVelocity.Z = 1.0f * ProjectileMovementComponent->MaxSpeed;
+		}
+		else
+			BallVelocity.Z = -Velocity;
+
+		FVector ReflectedVelocity(BallVelocity.X, BallVelocity.Y, BallVelocity.Z);
+		
+
+		ProjectileMovementComponent->Velocity = ReflectedVelocity;
+		
+		UE_LOG(LogTemp, Warning, TEXT("Current values are: ReflectedVelocity %s"), *ReflectedVelocity.ToString());
+		*/
+
+		FVector ReflectedVelocity;
+
+		// Paddle Hit.
+		if (APaddle* Paddle = Cast<APaddle>(OtherActor))
+		{
+			float PaddleVelocity = Paddle->GetZVelocity();
+
+			FVector Direction = FVector(0.0f, 1.0f, PaddleVelocity);
+
+			ReflectedVelocity = Direction * ProjectileMovementComponent->MaxSpeed;
+		}
+		// AI Paddle Hit.
+		else if (AAIPaddle* AIPaddle = Cast<AAIPaddle>(OtherActor))
+		{
+			float PaddleVelocity = AIPaddle->GetZVelocity();
+
+			FVector Direction = FVector(0.0f, -1.0f, PaddleVelocity);
+
+			ReflectedVelocity = Direction * ProjectileMovementComponent->MaxSpeed;
+		}
+		// Bound Hit.
+		else
+		{
+			FVector BallVelocity = ProjectileMovementComponent->Velocity;
+			ReflectedVelocity = FVector(BallVelocity.X, BallVelocity.Y, -BallVelocity.Z);
+		}
+
+		if (ReflectedVelocity.Z == 0.0f)
+		{
+			float random = FMath::RandRange(-1.0f, 1.0f);
+
+			if (random < 0.0f)
+				ReflectedVelocity.Z = -1.0f * ProjectileMovementComponent->MaxSpeed;
+			else
+				ReflectedVelocity.Z = 1.0f * ProjectileMovementComponent->MaxSpeed;
+		}
+
+		ProjectileMovementComponent->Velocity = ReflectedVelocity;
+		
+		UE_LOG(LogTemp, Warning, TEXT("Current values are: ReflectedVelocity %s"), *ReflectedVelocity.ToString());
 	}
 }
 
