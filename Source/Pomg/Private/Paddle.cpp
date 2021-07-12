@@ -30,13 +30,13 @@ APaddle::APaddle()
 	CollisionComponent->OnComponentHit.AddDynamic(this, &APaddle::OnHit);
 
 	// Initialize paddle velocity.
-	ZDirection = 0.0f;
+	ZVelocity = 0.0f;
 
 	// Create an instance of our movement component, and tell it to update our root component.
 	OurMovementComponent = CreateDefaultSubobject<UPaddlePawnMovementComponent>(TEXT("PaddleCustomMovementComponent"));
 	OurMovementComponent->UpdatedComponent = RootComponent;
 
-	// Create the sound.
+	// Create the sound to play it when the ball hit this paddle.
 	static ConstructorHelpers::FObjectFinder<USoundWave> HitSoundAsset(TEXT("/Game/Effects/pong-paddle.pong-paddle"));
 	if (HitSoundAsset.Succeeded())
 		HitSound = HitSoundAsset.Object;
@@ -55,8 +55,10 @@ void APaddle::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent
 	{
 		// Get the name of the changed property
 		const FName PropertyName(PropertyChangedEvent.Property->GetFName());
-		// If the changed property is ShowStaticMesh then we
-		// will set the visibility of the actor
+		
+		// If the changed property is Static Mesh then we can set
+		// CollisionComponent extend to the same size of the new Static Mesh
+		// set to the VisualComponent.
 		if (PropertyName == GET_MEMBER_NAME_CHECKED(APaddle, VisualComponent))
 		{
 			UStaticMesh* SM = VisualComponent->GetStaticMesh();
@@ -68,6 +70,7 @@ void APaddle::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent
 			}
 		}
 	}
+
 	// Then call the parent version of this function
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 }
@@ -93,7 +96,7 @@ void APaddle::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	// Respond every frame to the values of our movement.
+	// Bind "MovePaddle" Axis Mapping with APaddle::Move_ZAxis method.
 	InputComponent->BindAxis(TEXT("MovePaddle"), this, &APaddle::Move_ZAxis);
 }
 
@@ -101,7 +104,8 @@ void APaddle::Move_ZAxis(float AxisValue)
 {
 	if (AxisValue != 0.0f)
 	{
-		ZDirection = AxisValue;
+		// Keep the lastest Z velocity to check it when the ball hit this paddle.
+		ZVelocity = AxisValue;
 
 		float Scale = 100.0f; // TODO mover a propiedad para poder modificarla en el editor.
 
@@ -113,5 +117,5 @@ void APaddle::Move_ZAxis(float AxisValue)
 
 float APaddle::GetZVelocity() const
 {
-	return ZDirection;
+	return ZVelocity;
 }

@@ -22,20 +22,24 @@ public:
 
 protected:
 
+	// Used to detect collisions.
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UBoxComponent* CollisionComponent;
 
+	// Used to show a static mesh and make it visible.
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UStaticMeshComponent* VisualComponent;
 
-	// Input variables
-	float ZDirection;
+	// Keep current Z velocity.
+	float ZVelocity;
 
 	// Use my own Pawn Movement Component implementation.
 	UPaddlePawnMovementComponent* OurMovementComponent;
 
+	// Get Pawn Movement Component.
 	virtual UPawnMovementComponent* GetMovementComponent() const override;
 
+	// Event triggered when a property has been changed in the Unreal editor.
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
 	/** called when projectile hits something */
@@ -47,7 +51,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	// Input functions
+	// Player's input method.
 	void Move_ZAxis(float AxisValue);
 
 	/**
@@ -57,7 +61,7 @@ public:
 	float GetZVelocity() const;
 
 private:
-	// Sound played when the ball hits this Paddle.
+	// Sound played when the ball hits this paddle.
 	USoundBase* HitSound;
 
 };

@@ -30,14 +30,14 @@ AAIPaddle::AAIPaddle()
 	CollisionComponent->BodyInstance.SetCollisionProfileName("Pawn");
 	CollisionComponent->OnComponentHit.AddDynamic(this, &AAIPaddle::OnHit);
 
-	// Initialize paddle velocity.
-	ZDirection = 0.0f;
+	// Initialize Z velocity.
+	ZVelocity = 0.0f;
 
 	// Create an instance of our movement component, and tell it to update our root component.
 	OurMovementComponent = CreateDefaultSubobject<UPaddlePawnMovementComponent>(TEXT("AIPaddleCustomMovementComponent"));
 	OurMovementComponent->UpdatedComponent = RootComponent;
 
-	// Create the sound.
+	// Create the sound to play it when the ball hit this paddle.
 	static ConstructorHelpers::FObjectFinder<USoundWave> HitSoundAsset(TEXT("/Game/Effects/pong-paddle.pong-paddle"));
 	if (HitSoundAsset.Succeeded())
 		HitSound = HitSoundAsset.Object;
@@ -64,15 +64,19 @@ float AAIPaddle::ComputeBallZCoordinate() const
 	return z;
 }
 
-void AAIPaddle::MovePaddle(float direction)
+void AAIPaddle::MovePaddle(float AxisValue)
 {
-	ZDirection = direction;
+	if (AxisValue != 0.0f)
+	{
+		// Keep the lastest Z movement to check it when the ball hit this paddle.
+		ZVelocity = AxisValue;
 
-	float Scale = 100.0f; // TODO mover a propiedad para poder modificarla en el editor.
+		float Scale = 100.0f; // TODO mover a propiedad para poder modificarla en el editor.
 
-	FVector DirectionVector = FVector(0.0f, 0.0f, direction);
+		FVector DirectionVector = FVector(0.0f, 0.0f, AxisValue);
 
-	OurMovementComponent->AddInputVector(DirectionVector * Scale);
+		OurMovementComponent->AddInputVector(DirectionVector * Scale);
+	}
 }
 
 // Called every frame
@@ -153,6 +157,6 @@ void AAIPaddle::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 
 float AAIPaddle::GetZVelocity() const
 {
-	return ZDirection;
+	return ZVelocity;
 }
 

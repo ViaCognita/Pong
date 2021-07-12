@@ -23,16 +23,16 @@ public:
 
 protected:
 
-	// Used to detect collision.s
+	// Used to detect collisions.
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UBoxComponent* CollisionComponent;
 
-	// Used to show a static mesh.
+	// Used to show a static mesh and make it visible.
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UStaticMeshComponent* VisualComponent;
 
-	// Input variables
-	float ZDirection;
+	// Keep current Z velocity.
+	float ZVelocity;
 
 	// Use my own Pawn Movement Component implementation.
 	UPaddlePawnMovementComponent* OurMovementComponent;
@@ -48,14 +48,14 @@ protected:
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 private:
-	// The ball in the game.
+	// The ball in the game. Used to know where it is and to compute where to move this paddle.
 	ABall* GameBall;
 
 	// Compute towards which Z coordinate the ball is moving.
 	float ComputeBallZCoordinate() const;
 
 	// Move the paddle to 'direction'.
-	void MovePaddle(float direction);
+	void MovePaddle(float AxisValue);
 
 	// Sound played when the ball hits this Paddle.
 	USoundBase* HitSound;
