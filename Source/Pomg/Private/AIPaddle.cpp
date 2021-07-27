@@ -26,8 +26,11 @@ AAIPaddle::AAIPaddle()
 	// Set up CollisionComponent as parent of VisualComponent;
 	VisualComponent->SetupAttachment(CollisionComponent);
 
+	// Disable collisions on Visual Component using "NoCollision" profile.
 	VisualComponent->BodyInstance.SetCollisionProfileName("NoCollision");
+	// Enable collisions on Collision Component using "Pawn" profile.
 	CollisionComponent->BodyInstance.SetCollisionProfileName("Pawn");
+	// Add method to manage collisions.
 	CollisionComponent->OnComponentHit.AddDynamic(this, &AAIPaddle::OnHit);
 
 	// Initialize Z velocity.

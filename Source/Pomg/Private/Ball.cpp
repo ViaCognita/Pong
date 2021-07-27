@@ -38,17 +38,28 @@ ABall::ABall()
 		CollisionComponent->SetBoxExtent(Bounds.BoxExtent);
 	}
 
+	// Set Collision component as Root Component.
 	RootComponent = CollisionComponent;
+	// Attach Visual Component to Collision Component.
 	VisualComponent->SetupAttachment(CollisionComponent);
 
+	// Disable collisions in Visual Component.
 	VisualComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	// Enable only Query Collisions in the Collision component.
 	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	// Set collision object type to Projectile.
 	CollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel1); // ECC_GameTraceChannel1 is my Projectile Object Type.
+	// Reset all response channels to ignore.
 	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	// Set block response to Pawn's object channel.
 	CollisionComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+	// Set block response to Bound's object channel.
 	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Block); // ECC_GameTraceChannel2 is my Bound Object Type.
+	// Set overlap response to Goal's object channel.
 	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Overlap); // ECC_GameTraceChannel3 is my Goal Object Type.
+	// Set to generate overlap events.
 	CollisionComponent->SetGenerateOverlapEvents(true);
+	// Set the method to execute when a hit event it's triggered.
 	CollisionComponent->OnComponentHit.AddDynamic(this, &ABall::OnHit);
 
 	// Use this component to drive this ball's movement.

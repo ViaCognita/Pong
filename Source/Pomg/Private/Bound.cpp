@@ -14,12 +14,18 @@ ABound::ABound()
 
 	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollComp"));
 	CollisionComponent->SetBoxExtent(FVector(30.0f, 30.0f, 30.0f));
-	
+
+	// Enable only Query Collisions in the Collision component.
 	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	// Set collision object type to Bound.
 	CollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel2); // ECC_GameTraceChannel2 is Bound Object Type.
+	// Reset all response channels to ignore.
 	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	// Set block response to Pawn's object channel.
 	CollisionComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block); // To block Paddle objects.
+	// Set block response to Projectile's object channel.
 	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Block); // ECC_GameTraceChannel1 is my Projectile Object Type.
+	// Set the method to execute when a hit event it's triggered.
 	CollisionComponent->OnComponentHit.AddDynamic(this, &ABound::OnHit);
 
 	RootComponent = CollisionComponent;
