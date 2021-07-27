@@ -4,20 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Bound.generated.h"
+#include "Frontier.generated.h"
 
 // Avoid add unnecesary imports.
 class UBoxComponent;
 class USoundBase;
 
 UCLASS()
-class POMG_API ABound : public AActor
+class POMG_API AFrontier : public AActor
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	ABound();
+	AFrontier();
 
 protected:
 

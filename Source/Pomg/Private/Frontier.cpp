@@ -1,13 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Bound.h"
+#include "Frontier.h"
 #include "Ball.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
-ABound::ABound()
+AFrontier::AFrontier()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
@@ -26,7 +26,7 @@ ABound::ABound()
 	// Set block response to Projectile's object channel.
 	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Block); // ECC_GameTraceChannel1 is my Projectile Object Type.
 	// Set the method to execute when a hit event it's triggered.
-	CollisionComponent->OnComponentHit.AddDynamic(this, &ABound::OnHit);
+	CollisionComponent->OnComponentHit.AddDynamic(this, &AFrontier::OnHit);
 
 	RootComponent = CollisionComponent;
 
@@ -37,7 +37,7 @@ ABound::ABound()
 
 }
 
-void ABound::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AFrontier::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
 	{

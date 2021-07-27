@@ -4,7 +4,6 @@
 #include "Ball.h"
 #include "Paddle.h"
 #include "AIPaddle.h"
-#include "Bound.h"
 #include "PongGameStateBase.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
