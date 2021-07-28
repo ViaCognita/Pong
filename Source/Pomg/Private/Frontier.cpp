@@ -18,13 +18,13 @@ AFrontier::AFrontier()
 	// Enable only Query Collisions in the Collision component.
 	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	// Set collision object type to Bound.
-	CollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel2); // ECC_GameTraceChannel2 is Bound Object Type.
+	CollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel2); // ECC_GameTraceChannel2 is Frontier Collision Object Type.
 	// Reset all response channels to ignore.
 	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	// Set block response to Pawn's object channel.
 	CollisionComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block); // To block Paddle objects.
 	// Set block response to Projectile's object channel.
-	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Block); // ECC_GameTraceChannel1 is my Projectile Object Type.
+	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Block); // ECC_GameTraceChannel1 is Projectile Collision Object Type.
 	// Set the method to execute when a hit event it's triggered.
 	CollisionComponent->OnComponentHit.AddDynamic(this, &AFrontier::OnHit);
 

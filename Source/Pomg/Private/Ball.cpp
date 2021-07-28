@@ -47,15 +47,15 @@ ABall::ABall()
 	// Enable only Query Collisions in the Collision component.
 	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	// Set collision object type to Projectile.
-	CollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel1); // ECC_GameTraceChannel1 is my Projectile Object Type.
-	// Reset all response channels to ignore.
+	CollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel1); // ECC_GameTraceChannel1 is Projectile Collision Object Type.
+	// Set all response channels to ignore.
 	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	// Set block response to Pawn's object channel.
 	CollisionComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
-	// Set block response to Bound's object channel.
-	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Block); // ECC_GameTraceChannel2 is my Bound Object Type.
-	// Set overlap response to Goal's object channel.
-	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Overlap); // ECC_GameTraceChannel3 is my Goal Object Type.
+	// Set block response to Frontier's object channel.
+	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Block); // ECC_GameTraceChannel2 is Frontier Collision Object Type.
+	// Set overlap response to Objective's object channel.
+	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Overlap); // ECC_GameTraceChannel3 is Objective Collision Object Type.
 	// Set to generate overlap events.
 	CollisionComponent->SetGenerateOverlapEvents(true);
 	// Set the method to execute when a hit event it's triggered.
@@ -109,76 +109,7 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 	{
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Ball Hits: %s"), *OtherActor->GetName()));
 
-		/*
-		float Velocity = 0.0f;
-
-		// Paddle Hit.
-		if (APaddle* Paddle = Cast<APaddle>(OtherActor))
-		{
-			float PaddleVelocity = Paddle->GetZVelocity();
-
-			FVector Direction = FVector(0.0f, 1.0f, PaddleVelocity);
-
-			ProjectileMovementComponent->Velocity = Direction * ProjectileMovementComponent->MaxSpeed;
-		}
-		// AI Paddle Hit.
-		else if (AAIPaddle* AIPaddle = Cast<AAIPaddle>(OtherActor))
-		{
-			float PaddleVelocity = AIPaddle->GetZVelocity();
-
-			FVector Direction = FVector(0.0f, -1.0f, PaddleVelocity);
-
-			ProjectileMovementComponent->Velocity = Direction * ProjectileMovementComponent->MaxSpeed;
-		}
-		// Bound Hit.
-		else
-		{
-			FVector BallVelocity = ProjectileMovementComponent->Velocity;
-			FVector ReflectedVelocity(BallVelocity.X, BallVelocity.Y, -BallVelocity.Z);
-
-			ProjectileMovementComponent->Velocity = ReflectedVelocity;
-		}
-		*/
-
-		/*
-		// Paddle Hit.
-		if (APaddle* Paddle = Cast<APaddle>(OtherActor))
-		{
-			Velocity = Paddle->GetZVelocity() * ProjectileMovementComponent->MaxSpeed;
-		}
-		// AI Paddle Hit.
-		else if (AAIPaddle* AIPaddle = Cast<AAIPaddle>(OtherActor))
-		{
-			Velocity = AIPaddle->GetZVelocity() * ProjectileMovementComponent->MaxSpeed;
-		}
-		// Bound Hit.
-		else
-		{
-			Velocity = ProjectileMovementComponent->Velocity.Z;
-		}
-
-		FVector BallVelocity = ProjectileMovementComponent->Velocity;
-
-		if (Velocity == 0.0f)
-		{
-			float random = FMath::RandRange(-1.0f, 1.0f);
-
-			if (random < 0.0f)
-				BallVelocity.Z = -1.0f * ProjectileMovementComponent->MaxSpeed;
-			else
-				BallVelocity.Z = 1.0f * ProjectileMovementComponent->MaxSpeed;
-		}
-		else
-			BallVelocity.Z = -Velocity;
-
-		FVector ReflectedVelocity(BallVelocity.X, BallVelocity.Y, BallVelocity.Z);
-		
-
-		ProjectileMovementComponent->Velocity = ReflectedVelocity;
-		
-		UE_LOG(LogTemp, Warning, TEXT("Current values are: ReflectedVelocity %s"), *ReflectedVelocity.ToString());
-		*/
-
+		// Compute Reflected Velocity depending on the actor with whom we have collided.
 		FVector ReflectedVelocity;
 
 		// Paddle Hit.
@@ -186,6 +117,12 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 		{
 			float PaddleVelocity = Paddle->GetZVelocity();
 
+			// The ball only moves on axis Y, and Z.
+			// Here, Y = 1.0 because this paddle is on the left side and the ball will bounce to the right side of the screen.
+			// PaddleVelocity is Paddle's Z velocity.
+			// If Paddle is moving down (PaddleVelocity < 0.0), the ball will bounces down.
+			// If Paddle is moving up (PaddleVelocity > 0.0), the ball will bounces up.
+			// This is why I use PaddleVelocity as the new Z velocity for the ball.
 			FVector Direction = FVector(0.0f, 1.0f, PaddleVelocity);
 
 			ReflectedVelocity = Direction * ProjectileMovementComponent->MaxSpeed;
@@ -195,27 +132,37 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 		{
 			float PaddleVelocity = AIPaddle->GetZVelocity();
 
+			// Here, Y = 1.0 because this paddle is on the right side and the ball will bounce to the left side of the screen.
 			FVector Direction = FVector(0.0f, -1.0f, PaddleVelocity);
 
 			ReflectedVelocity = Direction * ProjectileMovementComponent->MaxSpeed;
 		}
-		// Bound Hit.
+		// Frontier Hit.
 		else
 		{
 			FVector BallVelocity = ProjectileMovementComponent->Velocity;
+			// The ball will continue moving on the same direction on Y axis.
+			// But it will change its direction on Z axis because the frontiers are at the top and at the bottom of the screen.
+			// This is why we change the sign of BallVelocity.Z.
+			// The Z axis is the vertical axis of the screen(up and down).
 			ReflectedVelocity = FVector(BallVelocity.X, BallVelocity.Y, -BallVelocity.Z);
 		}
 
+		// If the ball won't up or down, we will choose randomly if it will move up or down.
+		// This happens when the ball hits a paddle that is not moving up or down.
 		if (ReflectedVelocity.Z == 0.0f)
 		{
 			float random = FMath::RandRange(-1.0f, 1.0f);
 
+			// if it is negative, it will move down.
 			if (random < 0.0f)
 				ReflectedVelocity.Z = -1.0f * ProjectileMovementComponent->MaxSpeed;
+			// else, if it is positive, it will move up.
 			else
 				ReflectedVelocity.Z = 1.0f * ProjectileMovementComponent->MaxSpeed;
 		}
 
+		// Set the new velocity to the ball's movement component.
 		ProjectileMovementComponent->Velocity = ReflectedVelocity;
 		
 		UE_LOG(LogTemp, Warning, TEXT("Current values are: ReflectedVelocity %s"), *ReflectedVelocity.ToString());
@@ -228,7 +175,7 @@ void ABall::NotifyActorBeginOverlap(AActor* OtherActor)
 
 	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Overlaps: %s"), *OtherActor->GetName()));
 
-	// AI makes a point.
+	// If the ball has overlaped the AI Goal, then AI makes a point.
 	if (OtherActor->GetName().Equals("Goal_AI"))
 	{
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Goal_AI"));
@@ -238,10 +185,11 @@ void ABall::NotifyActorBeginOverlap(AActor* OtherActor)
 		{
 			APongGameStateBase* GameState = Cast<APongGameStateBase>(world->GetGameState());
 
+			// Add one point to AI score.
 			GameState->AddAIPoint();
 		}
 	}
-	// Player makes a point.
+	// If the ball has overlaped the Player Goal, then Player makes a point.
 	else if (OtherActor->GetName().Equals("Goal_Player"))
 	{
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Goal_Player"));
@@ -251,6 +199,7 @@ void ABall::NotifyActorBeginOverlap(AActor* OtherActor)
 		{
 			APongGameStateBase* GameState = Cast<APongGameStateBase>(world->GetGameState());
 
+			// Add one point to player score.
 			GameState->AddPlayerPoint();
 		}
 	}

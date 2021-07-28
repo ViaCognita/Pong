@@ -53,7 +53,7 @@ UPawnMovementComponent* APaddle::GetMovementComponent() const
 
 void APaddle::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
-	// Check if property is valid
+	// Check if the property changed is valid.
 	if (PropertyChangedEvent.Property != nullptr)
 	{
 		// Get the name of the changed property
@@ -64,11 +64,15 @@ void APaddle::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent
 		// set to the VisualComponent.
 		if (PropertyName == GET_MEMBER_NAME_CHECKED(APaddle, VisualComponent))
 		{
+			// Get the new Static Mesh set to the Visual Component.
 			UStaticMesh* SM = VisualComponent->GetStaticMesh();
+			// If it is valid.
 			if (SM != nullptr)
 			{
+				// Get the Static Mesh Bounds.
 				FBoxSphereBounds Bounds = SM->ExtendedBounds;
 
+				// Set this Bounds to the Collision Component to 
 				CollisionComponent->SetBoxExtent(Bounds.BoxExtent);
 			}
 		}
