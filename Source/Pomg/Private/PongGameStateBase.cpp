@@ -14,7 +14,7 @@
 
 APongGameStateBase::APongGameStateBase()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	// Initializate the ball and its start location.
 	TheBall = nullptr;
@@ -40,7 +40,7 @@ APongGameStateBase::APongGameStateBase()
 	// How has scored last.
 	LastScore = ELastScored::ENone;
 
-	// Get End menu class to instantiate later and show it on the view port.
+	// Get End menu class to instantiate it later and show it on the view port.
 	ConstructorHelpers::FClassFinder<UUserWidget> WBPEndMenuFinder(TEXT("/Game/Blueprint/Widgets/UI/UMG_EndMenu"));
 	if (WBPEndMenuFinder.Succeeded())
 	{
@@ -52,9 +52,11 @@ void APongGameStateBase::StartGame()
 {
 	if (IsFirstStart)
 	{
+		// Get paddles references and spawn the ball.
 		InitLevelActors();
 		IsFirstStart = false;
 	}
+	// Here, we start the game after a Game Over.
 	else
 	{
 		// Reset the scores and update the HUD.
@@ -66,6 +68,7 @@ void APongGameStateBase::StartGame()
 		// Change game state to Waiting to start.
 		CurrentState = EPongStates::EWaitingToStart;
 
+		// Set paddles to their initial localtion.
 		if (AIPaddle)
 			AIPaddle->SetActorLocation(AILocation);
 		if (PlayerPaddle)
@@ -85,29 +88,6 @@ void APongGameStateBase::StartGame()
 	StartPlaying();
 }
 
-void APongGameStateBase::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	// Change game state.
-	if (IsGameEnded())
-		CurrentState = EPongStates::EEnded;
-	else
-		CurrentState = EPongStates::EWaitingToStart;
-
-	switch (CurrentState)
-	{
-	case EPongStates::EWaitingToStart:
-		break;
-	case EPongStates::EPlaying:
-		break;
-	case EPongStates::EEnded:
-		GameEnded();
-		break;
-	}
-
-}
-
 void APongGameStateBase::AddAIPoint()
 {
 	// Increase AI Score.
@@ -121,6 +101,10 @@ void APongGameStateBase::AddAIPoint()
 
 	// Stop the ball and move it to its start location.
 	ResetTheBall();
+
+	// Check if we have reached the max score to end the game.
+	if (IsGameEnded())
+		GameEnded();
 }
 
 void APongGameStateBase::AddPlayerPoint()
@@ -136,10 +120,15 @@ void APongGameStateBase::AddPlayerPoint()
 
 	// Stop the ball and move it to its start location.
 	ResetTheBall();
+
+	// Check if we have reached the max score to end the game.
+	if (IsGameEnded())
+		GameEnded();
 }
 
 inline bool APongGameStateBase::IsGameEnded()
 {
+	// If someone has reached the maximum score.
 	if ((PlayerScore == MaxScore) || (AIScore == MaxScore))
 		return true;
 	else
@@ -218,6 +207,7 @@ void APongGameStateBase::InitLevelActors()
 
 			if (AIPaddle != nullptr)
 			{
+				// Set ball reference to let the AI know where the ball is while playing.
 				AIPaddle->SetGameBallReference(TheBall);
 				break;
 			}

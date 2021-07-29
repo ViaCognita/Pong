@@ -39,9 +39,6 @@ public:
 
 	APongGameStateBase();
 
-	// Tick called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	// Start the game.
 	void StartGame();
 
@@ -96,13 +93,13 @@ private:
 	// Maximum score to win the game.
 	int MaxScore;
 
-	// Set level actors (both paddle and the ball) to their initial location.
+	// Get level actors references (both paddle and the ball) and set the ball to its initial location.
 	void InitLevelActors();
 
 	// Check if someone has reached the maximum score.
 	bool IsGameEnded();
 
-	// Do all the stuff related to when the game has ended: set game paused, show end menu, ...
+	// Do all the stuff related to when the game has ended: show end menu, pause the game, ...
 	void GameEnded();
 
 	// Update the HUD to show a new score.
