@@ -37,6 +37,7 @@ APaddle::APaddle()
 
 	// Create an instance of our movement component, and tell it to update our root component.
 	OurMovementComponent = CreateDefaultSubobject<UPaddlePawnMovementComponent>(TEXT("PaddleCustomMovementComponent"));
+	// Set the component that this movement component will move.
 	OurMovementComponent->UpdatedComponent = RootComponent;
 
 	// Create the sound to play it when the ball hit this paddle.
@@ -88,6 +89,7 @@ void APaddle::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitive
 	{
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Paddle has been hit by: %s"), *OtherActor->GetName()));
 
+		// If the ball has hit this paddle, play a sound.
 		if (ABall* Ball = Cast<ABall>(OtherActor))
 		{
 			if (HitSound != nullptr)

@@ -15,9 +15,9 @@ AFrontier::AFrontier()
 	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollComp"));
 	CollisionComponent->SetBoxExtent(FVector(30.0f, 30.0f, 30.0f));
 
-	// Enable only Query Collisions in the Collision component.
+	// Enable Query Only collisions in the Collision component.
 	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	// Set collision object type to Bound.
+	// Set collision object type to Limit.
 	CollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel2); // ECC_GameTraceChannel2 is Frontier Collision Object Type.
 	// Reset all response channels to ignore.
 	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);

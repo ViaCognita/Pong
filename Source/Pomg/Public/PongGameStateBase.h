@@ -105,7 +105,7 @@ private:
 	// Update the HUD to show a new score.
 	void UpdateHud();
 
-	// Changes the state to Playing and Launch the ball.
+	// Launch the ball to the player or AI depending on which one has made the last score.
 	void StartPlaying();
 
 	// Launch the ball to YDirection (to the Player or to the AI paddle).

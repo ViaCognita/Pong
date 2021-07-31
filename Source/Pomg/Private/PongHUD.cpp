@@ -13,31 +13,26 @@ const float MidScreenOffset = 80.0f;
 
 APongHUD::APongHUD()
 {
+	// Get the score font.
 	ConstructorHelpers::FObjectFinder<UFont> ScoreFontObject(TEXT("Font'/Game/Fonts/ScoreFont.ScoreFont'"));
 	if (ScoreFontObject.Object)
 		ScoreFont = ScoreFontObject.Object;
 	else
 		ScoreFont = nullptr;
 
+	// Get the text font.
 	ConstructorHelpers::FObjectFinder<UFont> TextFontObject(TEXT("Font'/Game/Fonts/TextFont.TextFont'"));
 	if (TextFontObject.Object)
 		TextFont = TextFontObject.Object;
 	else
 		TextFont = nullptr;
 
-	// PlayerHudWidget must be a cast from the UMG.UserWidget.
-	// The following line doesn't work.
-	//PlayerHudWidget = NewObject<UPlayerHUDWidget>(UPlayerHUDWidget::StaticClass());
-
+	// Load the level HUD, where we display the score, to get its class.
 	ConstructorHelpers::FClassFinder<UUserWidget> WBPPlayerHudFinder(TEXT("/Game/Blueprint/Widgets/UI/UMG_PlayerHUD"));
 	if (WBPPlayerHudFinder.Succeeded())
-	{
 		HudClass = WBPPlayerHudFinder.Class;
-	}
 	else
-	{
-		PlayerHudWidget = nullptr;
-	}
+		HudClass = nullptr;
 }
 
 // Called when the game starts or when spawned
