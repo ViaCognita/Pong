@@ -148,7 +148,7 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 			ReflectedVelocity = FVector(BallVelocity.X, BallVelocity.Y, -BallVelocity.Z);
 		}
 
-		// If the ball won't up or down, we will choose randomly if it will move up or down.
+		// If the ball won't move up or down, we will choose randomly if it will move up or down.
 		// This happens when the ball hits a paddle that is not moving up or down.
 		if (ReflectedVelocity.Z == 0.0f)
 		{
