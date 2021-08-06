@@ -142,7 +142,7 @@ void ABall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveCo
 		{
 			FVector BallVelocity = ProjectileMovementComponent->Velocity;
 			// The ball will continue moving on the same direction on Y axis.
-			// But it will change its direction on Z axis because the frontiers are at the top and at the bottom of the screen.
+			// But it will change its direction on Z axis because the edges are at the top and at the bottom of the screen.
 			// This is why we change the sign of BallVelocity.Z.
 			// The Z axis is the vertical axis of the screen(up and down).
 			ReflectedVelocity = FVector(BallVelocity.X, BallVelocity.Y, -BallVelocity.Z);

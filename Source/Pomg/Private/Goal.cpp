@@ -24,7 +24,7 @@ AGoal::AGoal()
 	// Set all response channels to ignore.
 	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	// Set overlap response to Objective's object channel.
-	CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap); // ECC_GameTraceChannel1 is Projectile Collision Object Type.
+	//CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap); // ECC_GameTraceChannel1 is Projectile Collision Object Type.
 	// Set to generate overlap events.
 	CollisionComponent->SetGenerateOverlapEvents(true);
 
