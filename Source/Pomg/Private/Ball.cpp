@@ -44,11 +44,11 @@ ABall::ABall()
 
 	// Disable collisions in Visual Component.
 	VisualComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	// Enable only Query Collisions in the Collision component.
+	// Enable Query Only Collisions in the Collision component.
 	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	// Set collision object type to Projectile.
 	CollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel1); // ECC_GameTraceChannel1 is Projectile Collision Object Type.
-	// Set all response channels to ignore.
+	// Set response to all channels to ignore.
 	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	// Set block response to Pawn's object channel.
 	CollisionComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
@@ -61,7 +61,7 @@ ABall::ABall()
 	// Set the method to execute when a hit event it's triggered.
 	CollisionComponent->OnComponentHit.AddDynamic(this, &ABall::OnHit);
 
-	// Use this component to drive this ball's movement.
+	// Use this component to drive ball's movement.
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 	ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
 	ProjectileMovementComponent->InitialSpeed = 0.0f;
