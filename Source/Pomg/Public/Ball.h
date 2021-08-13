@@ -50,8 +50,4 @@ public:
 	// Stops the ball setting its Projectile Movement Component Velocity vector to ZeroVector.
 	void StopMovement();
 
-private:
-	// Returns 'value' to a value between [-1.0, 1.0].
-	float Reduce(float value) const;
-
 };
