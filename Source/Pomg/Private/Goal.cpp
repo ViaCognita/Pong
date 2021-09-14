@@ -44,7 +44,7 @@ void AGoal::NotifyActorBeginOverlap(AActor* OtherActor)
 
 	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Overlaps: %s"), *OtherActor->GetName()));
 
-	// When the ball hits this, play a sound.
+	// When the ball overlap this, play a sound.
 	if (ABall* Ball = Cast<ABall>(OtherActor))
 	{
 		if (HitSound != nullptr)

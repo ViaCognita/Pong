@@ -2,12 +2,10 @@
 
 
 #include "PongGameModeBase.h"
-#include "AIPaddle.h"
 #include "Paddle.h"
 #include "Ball.h"
 #include "PongGameStateBase.h"
 #include "PongHUD.h"
-#include "Kismet/GameplayStatics.h"
 
 
 APongGameModeBase::APongGameModeBase()

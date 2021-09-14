@@ -6,8 +6,6 @@
 #include "GameFramework/GameModeBase.h"
 #include "PongGameModeBase.generated.h"
 
-class ABall;
-
 /**
  *
  */

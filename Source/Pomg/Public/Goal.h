@@ -30,7 +30,7 @@ public:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
 private:
-	// Sound played when the ball hits this Paddle.
+	// Sound played when the ball overlap this actor.
 	USoundBase* HitSound;
 
 };
